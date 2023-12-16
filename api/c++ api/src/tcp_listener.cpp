@@ -52,7 +52,7 @@ void net::TcpListener::Listen(const char* ip, uint_fast16_t port, uint_fast8_t m
 
 		throw std::runtime_error("Failed to listen");
 	}
-	std::cout << "\033[1;32mStarted listening on " << ip << ':' << port << " with " << maxConnections << " max connections\033[0m\n";
+	std::cout << "\033[1;32mStarted listening on " << ip << ':' << port << " with " << (int)maxConnections << " max connections\033[0m\n";
 
 	// Accept
 	while (true) {

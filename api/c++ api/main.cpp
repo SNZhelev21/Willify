@@ -40,5 +40,5 @@ int main()
 	net::TcpListener server;
 	server.CreateSocket();
 	server.SetOnReceive(onReceive);
-	server.Listen("127.0.0.1", 8080, 255);
+	server.Listen("127.0.0.1", 8080, 250);
 }
