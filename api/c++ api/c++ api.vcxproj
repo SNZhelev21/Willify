@@ -130,14 +130,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="src\core.cpp" />
-    <ClCompile Include="src\event.cpp" />
-    <ClCompile Include="src\tcp_listener.cpp" />
+    <ClCompile Include="src\Core.cpp" />
+    <ClCompile Include="src\Parser.cpp" />
+    <ClCompile Include="src\TcpListener.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\core.hpp" />
-    <ClInclude Include="include\event.hpp" />
-    <ClInclude Include="include\tcp_listener.hpp" />
+    <ClInclude Include="include\Core.hpp" />
+    <ClInclude Include="include\Event.hpp" />
+    <ClInclude Include="include\Parser.hpp" />
+    <ClInclude Include="include\TcpListener.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

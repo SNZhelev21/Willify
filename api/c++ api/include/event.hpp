@@ -9,32 +9,47 @@
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 
-struct Function {
-	std::function<void(std::string, SOCKET)> dataFunction;
-	std::function<void()> defaultFunction;
-};
+//struct Function {
+//	std::function<void(std::string, SOCKET)> dataFunction;
+//	std::function<void()> defaultFunction;
+//};
 
+template <typename... Args>
 class Event {
 public:
-	template <typename... Args>
-	void operator+=(std::function<void(Args...)> callback);
-	void operator+=(std::function<void()> callback);
+	using FuncType = std::function<void(Args...)>;
 
+	template <typename Function>
+	void Attach(Function func) {
+		this->m_Listeners.push_back(func);
+	}
 
-	void operator()(std::string data, SOCKET sock);
-	void operator()();
+	void Invoke(Args... args) {
+		for (const auto& func : this->m_Listeners) {
+			func(args...);
+		}
+	}
 
-
-	//template <typename... Args>
-	Event* Attach(std::function<void(std::string, SOCKET)> callback);
-	Event* Attach(std::function<void()> callback);
-
-	void DetachAll();
-
-	void Invoke(std::string data, SOCKET sock);
-	//template <typename... Args>
-	void Invoke();
+	void DetachAll() {
+		this->m_Listeners.clear();
+	}
 
 private:
-	std::vector<Function> m_Listeners;
+	std::vector<FuncType> m_Listeners;
 };
+
+//template <>
+//class Event<> {
+//public:
+//	using FuncType = std::function<void()>;
+//
+//	template <typename Function>
+//	Event* Attach(Function func);
+//
+//	void Invoke();
+//
+//	void DetachAll();
+//
+//private:
+//	std::vector<FuncType> m_Listeners;
+//};
