@@ -11,15 +11,12 @@ namespace Core {
 		class Parser {
 			public:
 				static void Parse(std::string req, SOCKET connection);
-				static Event<std::string, std::string, std::unordered_map<std::string, std::string> > onGet;
-				static Event<std::string, std::string, std::unordered_map<std::string, std::string> > onPost;
-				static Event<std::string, std::string, std::unordered_map<std::string, std::string> > onPut;
-				static Event<std::string, std::string, std::unordered_map<std::string, std::string> > onDelete;
 
-			private:
-				static std::string GetRoute(std::string req);
-				static std::unordered_map<std::string, std::string> GetParameters(std::string req);
 				static std::vector<std::string> Split(std::string str, char delimiter);
+				
+				static std::string GetRoute(std::string req);
+				
+				static std::unordered_map<std::string, std::string> GetParameters(std::string req);
 
 				static std::string GetMethod(std::string req);
 
@@ -30,6 +27,15 @@ namespace Core {
 				static std::string GetProtocol(std::string req);
 
 				static std::string GetProtocolVersion(std::string req);
+
+				// forwarded arguments: std::string route, SOCKET
+				static Event<std::string, SOCKET> onGet;
+				// forwarded arguments: std::string route, SOCKET
+				static Event<std::string, SOCKET> onPost;
+				// forwarded arguments: std::string route, SOCKET
+				static Event<std::string, SOCKET> onPut;
+				// forwarded arguments: std::string route, SOCKET
+				static Event<std::string, SOCKET> onDelete;
 		};
 	}
 }

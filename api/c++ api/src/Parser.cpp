@@ -19,16 +19,16 @@ void Core::Net::Parser::Parse(std::string req, SOCKET connection) {
 	std::cout << "\033[1;34mBody: " << body << "\033[0m\n";
 
 	if (method == "GET") {
-		Core::Net::Parser::onGet.Invoke(body, route, parametersMap);
+		Core::Net::Parser::onGet.Invoke(req, connection);
 	}
 	else if (method == "POST") {
-		Core::Net::Parser::onPost.Invoke(body, route, parametersMap);
+		Core::Net::Parser::onPost.Invoke(req, connection);
 	}
 	else if (method == "PUT") {
-		Core::Net::Parser::onPut.Invoke(body, route, parametersMap);
+		Core::Net::Parser::onPut.Invoke(req, connection);
 	}
 	else if (method == "DELETE") {
-		Core::Net::Parser::onDelete.Invoke(body, route, parametersMap);
+		Core::Net::Parser::onDelete.Invoke(req, connection);
 	}
 
 }
@@ -143,7 +143,7 @@ std::string Core::Net::Parser::GetProtocolVersion(std::string req) {
 	return split[3];
 }
 
-Event<std::string, std::string, std::unordered_map<std::string, std::string> > Core::Net::Parser::onGet;
-Event<std::string, std::string, std::unordered_map<std::string, std::string> > Core::Net::Parser::onPost;
-Event<std::string, std::string, std::unordered_map<std::string, std::string> > Core::Net::Parser::onPut;
-Event<std::string, std::string, std::unordered_map<std::string, std::string> > Core::Net::Parser::onDelete;
+Event<std::string, SOCKET> Core::Net::Parser::onGet;
+Event<std::string, SOCKET> Core::Net::Parser::onPost;
+Event<std::string, SOCKET> Core::Net::Parser::onPut;
+Event<std::string, SOCKET> Core::Net::Parser::onDelete;
