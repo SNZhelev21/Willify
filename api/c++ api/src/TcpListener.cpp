@@ -76,7 +76,7 @@ void Core::Net::TcpListener::SetOnDisconnect(Function callback) {
 	this->onDisconnect.Attach(callback);
 }
 
-template <typename Function>
+template<typename Function>
 void Core::Net::TcpListener::SetOnReceive(Function callback) {
 	this->onReceive.Attach(callback);
 }

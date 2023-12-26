@@ -33,6 +33,8 @@ void Core::Net::Parser::Parse(std::string req, SOCKET connection) {
 
 }
 
+//Core::Net::Parser::
+
 std::vector<std::string> Core::Net::Parser::Split(std::string str, char delimiter) {
 	std::vector<std::string> split;
 	std::stringstream ss(str);
