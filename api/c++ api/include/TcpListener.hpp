@@ -1,6 +1,6 @@
 #pragma once
 #include "Event.hpp"
-#include "Parser.hpp"
+#include "Router.hpp"
 #include <iostream>
 #include <functional>
 #include <thread>
@@ -34,8 +34,8 @@ namespace Core {
 				template <typename Function>
 				void SetOnDisconnect(Function callback);
 				
-				template <typename Function>
-				void SetOnReceive(Function callback);
+				
+				void SetOnReceive(std::function<void(Request&)> callback);
 				
 				void SetBlocking(bool blocking);
 
@@ -45,13 +45,15 @@ namespace Core {
 				SOCKET newConnection = INVALID_SOCKET;
 				WSADATA wsaData;
 				sockaddr_in server;
+
+				//Request req = Request();
+
 				int serverLen;
 				int bufferSize;
 
 				Event<SOCKET> onConnect;
 				Event<SOCKET> onDisconnect;
-				Event<std::string, SOCKET> onReceive;
-				Parser parser;
+				Event<Request&> onReceive;
 
 				void Accept();
 				void InitWSA();

@@ -131,13 +131,17 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="src\Core.cpp" />
-    <ClCompile Include="src\Parser.cpp" />
+    <ClCompile Include="src\Request.cpp" />
+    <ClCompile Include="src\Router.cpp" />
     <ClCompile Include="src\TcpListener.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Core.hpp" />
+    <ClInclude Include="include\ctre.hpp" />
     <ClInclude Include="include\Event.hpp" />
-    <ClInclude Include="include\Parser.hpp" />
+    <ClInclude Include="include\json.hpp" />
+    <ClInclude Include="include\Request.hpp" />
+    <ClInclude Include="include\Router.hpp" />
     <ClInclude Include="include\TcpListener.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

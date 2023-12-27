@@ -3,7 +3,6 @@
 Core::Net::TcpListener::TcpListener()
 {
 	this->InitWSA();
-	this->SetOnReceive(Parser::Parse);
 }
 
 Core::Net::TcpListener::~TcpListener()
@@ -76,8 +75,7 @@ void Core::Net::TcpListener::SetOnDisconnect(Function callback) {
 	this->onDisconnect.Attach(callback);
 }
 
-template<typename Function>
-void Core::Net::TcpListener::SetOnReceive(Function callback) {
+void Core::Net::TcpListener::SetOnReceive(std::function<void(Request&)> callback) {
 	this->onReceive.Attach(callback);
 }
 
@@ -89,6 +87,7 @@ void Core::Net::TcpListener::SetBlocking(bool blocking)
 
 void Core::Net::TcpListener::Accept()
 {
+	Request req = Request();
 	while (true) {
 		this->newConnection = accept(listener, (SOCKADDR*)&this->server, &this->serverLen);
 		if (this->newConnection == INVALID_SOCKET) {
@@ -103,18 +102,25 @@ void Core::Net::TcpListener::Accept()
 
 		this->onConnect.Invoke(this->newConnection);
 
-		std::vector<char> buffer(4096);
-		if (recv(this->newConnection, &buffer[0], buffer.size(), 0) < 0) {
+		char* buffer = new char[4096];
+
+		memset(buffer, 0, 4096);
+
+		if (recv(this->newConnection, buffer, 4096, 0) < 0) {
 			std::cout << "\033[31mFailed to read client request\033[0m\n";
 			std::cout << "\033[31mError code: " << WSAGetLastError() << "\033[0m\n";
 
 			throw std::runtime_error("Failed to read client request");
 		}
-		std::string data(buffer.begin(), buffer.end());
+		
+		std::string data(buffer);
 
-		this->onReceive.Invoke(data, this->newConnection);
+		req = Request(data, this->newConnection);
+		this->onReceive.Invoke(req);
 
 		this->onDisconnect.Invoke(this->newConnection);
 		closesocket(this->newConnection);
+
+		delete[] buffer;
 	}
 }

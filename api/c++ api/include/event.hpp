@@ -9,18 +9,12 @@
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 
-//struct Function {
-//	std::function<void(std::string, SOCKET)> dataFunction;
-//	std::function<void()> defaultFunction;
-//};
-
 template <typename... Args>
 class Event {
 public:
 	using FuncType = std::function<void(Args...)>;
 
-	template <typename Function>
-	void Attach(Function func) {
+	void Attach(FuncType func) {
 		this->m_Listeners.push_back(func);
 	}
 
