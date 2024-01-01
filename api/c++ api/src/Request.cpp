@@ -1,27 +1,34 @@
 #include "../include/Request.hpp"
 
-Core::Net::Request::Request() {
-	this->m_info.sender = INVALID_SOCKET;
-	this->m_info.original = "";
-	this->m_info.route = "";
-	this->m_info.method = "";
-	this->m_info.parameters = std::unordered_map<std::string, std::string>();
-	this->m_info.headers = std::unordered_map<std::string, std::string>();
-	this->m_info.body = "";
+Core::Net::RequestInformation::RequestInformation(std::string& req, SOCKET& sender) :
+	sender(sender),
+	original(req),
+	route(Core::Net::Request::GetRoute(original)),
+	method(Core::Net::Request::GetMethod(original)),
+	parameters(Core::Net::Request::GetParameters(original)),
+	headers(Core::Net::Request::GetHeaders(original)),
+	body(Core::Net::Request::GetBody(original))
+{};
 
+Core::Net::Request::Request() {
+	this->m_info = {};
 }
 
 Core::Net::Request::Request(std::string& req, SOCKET& sender) {
-	this->m_info.sender = sender;
-	this->m_info.original = req;
-	this->m_info.route = Core::Net::Request::GetRoute(req);
-	this->m_info.method = Core::Net::Request::GetMethod(req);
-	this->m_info.parameters = Core::Net::Request::GetParameters(req);
-	this->m_info.headers = Core::Net::Request::GetHeaders(req);
-	this->m_info.body = Core::Net::Request::GetBody(req);
+	//this->m_info.sender = sender;
+	//this->m_info.original = req;
+	//this->m_info.route = Core::Net::Request::GetRoute(req);
+	//this->m_info.method = Core::Net::Request::GetMethod(req);
+	//this->m_info.parameters = Core::Net::Request::GetParameters(req);
+	//this->m_info.headers = Core::Net::Request::GetHeaders(req);
+	//this->m_info.body = Core::Net::Request::GetBody(req);
+	this->m_info = {
+		req,
+		sender
+	};
 }
 
-std::vector<std::string> Core::Net::Request::Split(std::string str, char delimiter) {
+std::vector<std::string> Core::Net::Request::Split(std::string const& str, char delimiter) {
 	std::vector<std::string> split;
 	std::stringstream ss(str);
 	std::string word;
@@ -33,12 +40,12 @@ std::vector<std::string> Core::Net::Request::Split(std::string str, char delimit
 	return split;
 }
 
-std::string Core::Net::Request::GetRoute(std::string req) {
+std::string Core::Net::Request::GetRoute(std::string const& req) {
 	std::vector<std::string> split = Core::Net::Request::Split(req, ' ');
 	return split[1];
 }
 
-std::unordered_map<std::string, std::string> Core::Net::Request::GetParameters(std::string req) {
+std::unordered_map<std::string, std::string> Core::Net::Request::GetParameters(std::string const& req) {
 	std::vector<std::string> split = Core::Net::Request::Split(req, ' ');
 	std::string route = split[1];
 	std::regex argsRegex("\\?(.*)");
@@ -60,12 +67,12 @@ std::unordered_map<std::string, std::string> Core::Net::Request::GetParameters(s
 	return parametersMap;
 }
 
-std::string Core::Net::Request::GetMethod(std::string req) {
+std::string Core::Net::Request::GetMethod(std::string const& req) {
 	std::vector<std::string> split = Core::Net::Request::Split(req, ' ');
 	return split[0];
 }
 
-std::string Core::Net::Request::GetBody(std::string req) {
+std::string Core::Net::Request::GetBody(std::string const& req) {
 	std::vector<std::string> split = Core::Net::Request::Split(req, '\n');
 	std::string body = "";
 
@@ -96,7 +103,7 @@ std::string Core::Net::Request::GetBody(std::string req) {
 	return body;
 }
 
-std::string Core::Net::Request::GetHeader(std::string req, std::string header) {
+std::string Core::Net::Request::GetHeader(std::string const& req, std::string const& header) {
 	std::vector<std::string> split = Core::Net::Request::Split(req, '\n');
 	std::string headerLine = "";
 
@@ -119,11 +126,9 @@ std::string Core::Net::Request::GetHeader(std::string req, std::string header) {
 	return headerStr;
 }
 
-std::unordered_map<std::string, std::string> Core::Net::Request::GetHeaders(std::string req) {
-	std::vector<std::string> split = Core::Net::Request::Split(req, '\n');
+std::unordered_map<std::string, std::string> Core::Net::Request::GetHeaders(std::string const& req) {
+	auto split = Core::Net::Request::Split(req, '\n');
 	std::unordered_map<std::string, std::string> headers;
-
-	std::cout << "\033[1;35m" << req.length() << "\033[0m\n";
 
 	for (int i = 1; i < split.size(); ++i) {
 		// std::regex
@@ -148,12 +153,12 @@ std::unordered_map<std::string, std::string> Core::Net::Request::GetHeaders(std:
 	return headers;
 }
 
-std::string Core::Net::Request::GetProtocol(std::string req) {
+std::string Core::Net::Request::GetProtocol(std::string const& req) {
 	std::vector<std::string> split = Core::Net::Request::Split(req, ' ');
 	return split[2];
 }
 
-std::string Core::Net::Request::GetProtocolVersion(std::string req) {
+std::string Core::Net::Request::GetProtocolVersion(std::string const& req) {
 	std::vector<std::string> split = Core::Net::Request::Split(req, ' ');
 	return split[3];
 }

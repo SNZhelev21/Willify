@@ -2,6 +2,7 @@
 #include <vector>
 #include <functional>
 #include <string>
+#include <memory>
 
 #define WIN32_LEAN_AND_MEAN
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
@@ -9,41 +10,53 @@
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 
-template <typename... Args>
+template <typename FuncReturnType, typename... Args>
 class Event {
 public:
-	using FuncType = std::function<void(Args...)>;
+    using FuncType = std::function<FuncReturnType(Args...)>;
 
-	void Attach(FuncType func) {
-		this->m_Listeners.push_back(func);
-	}
+    Event& Attach(FuncType func) {
+        this->m_Listeners.push_back(func);
+        return *this;
+    }
 
-	void Invoke(Args... args) {
-		for (const auto& func : this->m_Listeners) {
-			func(args...);
-		}
-	}
+    std::vector<FuncReturnType> Invoke(Args... args) {
+        std::vector<FuncReturnType> results;
+        for (const auto& listener : this->m_Listeners) {
+            results.push_back(listener(args...));
+        }
 
-	void DetachAll() {
-		this->m_Listeners.clear();
-	}
+        return results;
+    }
+
+    void DetachAll() {
+        this->m_Listeners.clear();
+    }
 
 private:
-	std::vector<FuncType> m_Listeners;
+    std::vector<FuncType> m_Listeners;
 };
 
-//template <>
-//class Event<> {
-//public:
-//	using FuncType = std::function<void()>;
-//
-//	template <typename Function>
-//	Event* Attach(Function func);
-//
-//	void Invoke();
-//
-//	void DetachAll();
-//
-//private:
-//	std::vector<FuncType> m_Listeners;
-//};
+// Specialization for void return type
+template <typename... Args>
+class Event<void, Args...> {
+public:
+    using FuncType = std::function<void(Args...)>;
+
+    void Attach(FuncType func) {
+        this->m_Listeners.push_back(func);
+    }
+
+    void Invoke(Args... args) {
+        for (const auto& func : this->m_Listeners) {
+            func(args...);
+        }
+    }
+
+    void DetachAll() {
+        this->m_Listeners.clear();
+    }
+
+private:
+    std::vector<FuncType> m_Listeners;
+};

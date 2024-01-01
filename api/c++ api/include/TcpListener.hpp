@@ -28,12 +28,9 @@ namespace Core {
 				void Listen(const char* ip, uint_fast16_t port, uint_fast8_t maxConnections);
 				void Close();
 
-				template <typename Function>
-				void SetOnConnect(Function callback);
+				void SetOnConnect(std::function<void(SOCKET)> callback);
 
-				template <typename Function>
-				void SetOnDisconnect(Function callback);
-				
+				void SetOnDisconnect(std::function<void(SOCKET)> callback);
 				
 				void SetOnReceive(std::function<void(Request&)> callback);
 				
@@ -51,9 +48,9 @@ namespace Core {
 				int serverLen;
 				int bufferSize;
 
-				Event<SOCKET> onConnect;
-				Event<SOCKET> onDisconnect;
-				Event<Request&> onReceive;
+				Event<void, SOCKET> onConnect;
+				Event<void, SOCKET> onDisconnect;
+				Event<void, Request&> onReceive;
 
 				void Accept();
 				void InitWSA();

@@ -18,7 +18,9 @@
 namespace Core {
 	namespace Net {
 		struct RequestInformation {
-			SOCKET sender;
+			RequestInformation(std::string& req, SOCKET& sender);
+			RequestInformation() = default;
+			SOCKET sender = INVALID_SOCKET;
 			std::string original;
 			std::string route;
 			std::string method;
@@ -34,33 +36,33 @@ namespace Core {
 			RequestInformation m_info;
 
 			// Split a string by a delimiter
-			static std::vector<std::string> Split(std::string str, char delimiter);
+			static std::vector<std::string> Split(std::string const& str, char delimiter);
 
 			// Extract route from request
-			static std::string GetRoute(std::string req);
+			static std::string GetRoute(std::string const& req);
 
 			// Extract parameters from request
 			// Returns a map of parameters
-			static std::unordered_map<std::string, std::string> GetParameters(std::string req);
+			static std::unordered_map<std::string, std::string> GetParameters(std::string const& req);
 
 			// Extract method from request
-			static std::string GetMethod(std::string req);
+			static std::string GetMethod(std::string const& req);
 
 			// Extract body from request
-			static std::string GetBody(std::string req);
+			static std::string GetBody(std::string const& req);
 
 			// Extract header from request
-			static std::string GetHeader(std::string req, std::string header);
+			static std::string GetHeader(std::string const& req, std::string const& header);
 
 			// Extract headers from request
 			// Returns a map of headers
-			static std::unordered_map<std::string, std::string> GetHeaders(std::string req);
+			static std::unordered_map<std::string, std::string> GetHeaders(std::string const& req);
 
 			// Extract protocol from request
-			static std::string GetProtocol(std::string req);
+			static std::string GetProtocol(std::string const& req);
 
 			// Extract protocol version from request
-			static std::string GetProtocolVersion(std::string req);
+			static std::string GetProtocolVersion(std::string const& req);
 		};
 
 		#ifndef REQOPOVERLOAD
