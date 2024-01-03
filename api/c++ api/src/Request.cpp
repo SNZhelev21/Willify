@@ -42,7 +42,9 @@ std::vector<std::string> Core::Net::Request::Split(std::string const& str, char 
 
 std::string Core::Net::Request::GetRoute(std::string const& req) {
 	std::vector<std::string> split = Core::Net::Request::Split(req, ' ');
-	return split[1];
+	std::vector<std::string> split2 = Core::Net::Request::Split(split[1], '?');
+
+	return split2[0];
 }
 
 std::unordered_map<std::string, std::string> Core::Net::Request::GetParameters(std::string const& req) {
@@ -73,34 +75,22 @@ std::string Core::Net::Request::GetMethod(std::string const& req) {
 }
 
 std::string Core::Net::Request::GetBody(std::string const& req) {
-	std::vector<std::string> split = Core::Net::Request::Split(req, '\n');
 	std::string body = "";
 
-	int connLenLine = -1;
+	int bodyStartChar = -1;
 
-	for (int i = 0; i < split.size(); ++i) {
-		if (split[i].find("Content-Length") != std::string::npos) {
-			connLenLine = i;
-			break;
-		}
+	if (req.find("\r\n\r\n") != std::string::npos) {
+		bodyStartChar = req.find("\r\n\r\n");
+	}
+	else if (req.find("\n\n") != std::string::npos) {
+		bodyStartChar = req.find("\n\n");
 	}
 
-	if (connLenLine == -1) {
+	if (bodyStartChar == -1) {
 		return "";
 	}
 
-	std::string connLenLineStr = split[connLenLine];
-	std::regex connLenRegex("Content-Length: (.*)");
-	std::smatch connLenMatch;
-	std::regex_search(connLenLineStr, connLenMatch, connLenRegex);
-	std::string connLenStr = connLenMatch[1];
-	int connLen = std::stoi(connLenStr);
-
-	for (int i = connLenLine + 1; i < split.size(); ++i) {
-		body.append(split[i] + '\n');
-	}
-
-	return body;
+	return req.substr(bodyStartChar + 4);
 }
 
 std::string Core::Net::Request::GetHeader(std::string const& req, std::string const& header) {
@@ -126,20 +116,24 @@ std::string Core::Net::Request::GetHeader(std::string const& req, std::string co
 	return headerStr;
 }
 
-std::unordered_map<std::string, std::string> Core::Net::Request::GetHeaders(std::string const& req) {
+std::unordered_map<std::string, std::string> Core::Net::Request::GetHeaders(std::string req) {
+
+	int bodyStartChar = req.size();
+
+	if (req.find("\r\n\r\n") != std::string::npos) {
+		bodyStartChar = req.find("\r\n\r\n");
+	}
+	else if (req.find("\n\n") != std::string::npos) {
+		bodyStartChar = req.find("\n\n");
+	}
+
+	// remove body
+	req = req.substr(0, bodyStartChar);
+
 	auto split = Core::Net::Request::Split(req, '\n');
 	std::unordered_map<std::string, std::string> headers;
 
 	for (int i = 1; i < split.size(); ++i) {
-		// std::regex
-
-		//std::regex headerRegex("(.+): (.+)");
-		//std::smatch headerMatch;
-		//std::regex_search(split[i], headerMatch, headerRegex);
-		//std::string header = headerMatch[1];
-		//std::string value = headerMatch[2];
-
-		// ctre
 		auto headerMatch = ctre::match<"(.*): (.*)">(split[i]);
 		auto matched = headerMatch.matched();
 		if (matched.to_string() != "") {

@@ -44,6 +44,6 @@ namespace Core {
 
 				return res;
 			}
-		};
+		}static database;
 	}
 }

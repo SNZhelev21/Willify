@@ -13,7 +13,8 @@ namespace Core {
 			JSON,
 			HTML,
 			TEXT,
-			REDIRECT
+			REDIRECT,
+			ALREADY_EXISTS
 		};
 	}
 }

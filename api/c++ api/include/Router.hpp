@@ -1,14 +1,16 @@
 #pragma once
-#include <iostream>
+
+#include "Debug.hpp"
 #include <functional>
+#include <iostream>
 #include <sstream>
 #include <regex>
 #include <string>
+#include <optional>
 #include <unordered_map>
 #include "Event.hpp"
 #include "Request.hpp"
 #include "ResponseType.hpp"
-#include <optional>
 
 namespace Core {
 	namespace Net {

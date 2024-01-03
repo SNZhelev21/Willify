@@ -1,16 +1,33 @@
 #include "../include/Router.hpp"
 
 void Core::Net::Router::Handle(Request& req) {
-	//std::cout << "Received data: \n" << req << '\n';
+	#ifdef API_DEBUG
+		std::cout << "\033[1;34m[*] Handling request...\033[0m\n";
+		std::cout << "\033[1;34m	[*] Method: " << req.m_info.method << "\033[0m\n";
+		std::cout << "\033[1;34m	[*] Route: " << req.m_info.route << "\033[0m\n";
+		std::cout << "\033[1;34m	[*] Parameters size: " << req.m_info.parameters.size() << "\033[0m\n";
+		for (auto& [key, value] : req.m_info.parameters) {
+			std::cout << "\033[1;34m		[*] Parameter: " << key << " = " << value << "\033[0m\n";
+		}
+		std::cout << "\033[1;34m	[*] Headers size: " << req.m_info.headers.size() << "\033[0m\n";
+		for (auto& [key, value] : req.m_info.headers) {
+			std::cout << "\033[1;34m		[*] Header: " << key << " = " << value << "\033[0m\n";
+		}
+		std::cout << "\033[1;34m[*] Body:\n";
+		// split body into lines
+		std::vector<std::string> lines = Core::Net::Request::Split(req.m_info.body, '\n');
+		for (auto& line : lines) {
+			std::cout << "	" << line << '\n';
+		}
+		std::cout << "\033[0m";
+	#endif
 
 	std::string method = req.m_info.method;
 
 	std::vector<returnType> responses;
 	returnType response = std::make_tuple(ResponseType::OK, "", std::optional<std::vector<std::string>>(false));
-
 	try {
 		if (method == "GET") {
-			//std::cout << "get\n";
 			responses = this->get[req.m_info.route].Invoke(req);
 		}
 		else if (method == "POST") {
@@ -81,27 +98,52 @@ void Core::Net::Router::Respond(Request& req, returnType response) {
 	}
 	else if (type == ResponseType::BAD_REQUEST) {
 		header += "400 Bad Request\r\n";
+		header += "Access-Control-Allow-Origin: https://www.google.com\r\n";
+		header += "Access-Control-Allow-Methods: GET, POST, PUT, DELETE\r\n";
+		header += "Access-Control-Allow-Headers: X-PINGOTHER, Content-Type\r\n";
 		header += "Content-Type: text/plain\r\n";
 	}
 	else if (type == ResponseType::NOT_FOUND) {
 		header += "404 Not Found\r\n";
+		header += "Access-Control-Allow-Origin: https://www.google.com\r\n";
+		header += "Access-Control-Allow-Methods: GET, POST, PUT, DELETE\r\n";
+		header += "Access-Control-Allow-Headers: X-PINGOTHER, Content-Type\r\n";
 		header += "Content-Type: text/plain\r\n";
 	}
 	else if (type == ResponseType::INTERNAL_ERROR) {
 		header += "500 Internal Server Error\r\n";
+		header += "Access-Control-Allow-Origin: https://www.google.com\r\n";
+		header += "Access-Control-Allow-Methods: GET, POST, PUT, DELETE\r\n";
+		header += "Access-Control-Allow-Headers: X-PINGOTHER, Content-Type\r\n";
 		header += "Content-Type: text/plain\r\n";
 	}
 	else if (type == ResponseType::NOT_IMPLEMENTED) {
 		header += "501 Not Implemented\r\n";
+		header += "Access-Control-Allow-Origin: https://www.google.com\r\n";
+		header += "Access-Control-Allow-Methods: GET, POST, PUT, DELETE\r\n";
+		header += "Access-Control-Allow-Headers: X-PINGOTHER, Content-Type\r\n";
 		header += "Content-Type: text/plain\r\n";
 	}
 	else if (type == ResponseType::NOT_AUTHORIZED) {
 		header += "401 Unauthorized\r\n";
+		header += "Access-Control-Allow-Origin: https://www.google.com\r\n";
+		header += "Access-Control-Allow-Methods: GET, POST, PUT, DELETE\r\n";
+		header += "Access-Control-Allow-Headers: X-PINGOTHER, Content-Type\r\n";
 		header += "Content-Type: text/plain\r\n";
 	}
 	else if (type == ResponseType::REDIRECT) {
 		header += "302 Found\r\n";
+		header += "Access-Control-Allow-Origin: https://www.google.com\r\n";
+		header += "Access-Control-Allow-Methods: GET, POST, PUT, DELETE\r\n";
+		header += "Access-Control-Allow-Headers: X-PINGOTHER, Content-Type\r\n";
 		header += "Location: " + data + "\r\n";
+	}
+	else if (type == ResponseType::ALREADY_EXISTS) {
+		header += "409 Conflict\r\n";
+		header += "Access-Control-Allow-Origin: https://www.google.com\r\n";
+		header += "Access-Control-Allow-Methods: GET, POST, PUT, DELETE\r\n";
+		header += "Access-Control-Allow-Headers: X-PINGOTHER, Content-Type\r\n";
+		header += "Content-Type: text/plain\r\n";
 	}
 	
 	header += "Connection: Keep-Alive\r\n";

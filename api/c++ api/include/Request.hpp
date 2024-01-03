@@ -56,7 +56,7 @@ namespace Core {
 
 			// Extract headers from request
 			// Returns a map of headers
-			static std::unordered_map<std::string, std::string> GetHeaders(std::string const& req);
+			static std::unordered_map<std::string, std::string> GetHeaders(std::string req);
 
 			// Extract protocol from request
 			static std::string GetProtocol(std::string const& req);

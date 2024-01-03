@@ -106,13 +106,13 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)libpqxx-$(Configuration)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)libpqxx-$(Configuration)\include;$(SolutionDir)openssl\include;$(SolutionDir)jwt-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>libpq.lib;pqxx.lib;ws2_32.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)libpqxx-$(Configuration)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libssl.lib;libcrypto.lib;libpq.lib;pqxx.lib;ws2_32.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)libpqxx-$(Configuration)\lib;$(SolutionDir)openssl\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -125,15 +125,15 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)libpqxx-$(Configuration)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)libpqxx-$(Configuration)\include;$(SolutionDir)openssl\include;$(SolutionDir)jwt-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>libpq.lib;pqxx.lib;ws2_32.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)libpqxx-$(Configuration)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libssl.lib;libcrypto.lib;libpq.lib;pqxx.lib;ws2_32.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)libpqxx-$(Configuration)\lib;$(SolutionDir)openssl\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -148,6 +148,7 @@
     <ClInclude Include="include\Core.hpp" />
     <ClInclude Include="include\ctre.hpp" />
     <ClInclude Include="include\Database.hpp" />
+    <ClInclude Include="include\Debug.hpp" />
     <ClInclude Include="include\Event.hpp" />
     <ClInclude Include="include\json.hpp" />
     <ClInclude Include="include\Request.hpp" />

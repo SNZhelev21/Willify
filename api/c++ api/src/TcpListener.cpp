@@ -99,29 +99,33 @@ void Core::Net::TcpListener::Accept()
 			std::cout << "\033[31m[-] Failed to accept new connection...\033[0m\n";
 			std::cout << "\033[31m[-] Error code: " << WSAGetLastError() << "\033[0m\n";
 
+			closesocket(this->newConnection);
+
 			throw std::runtime_error("Failed to accept new connection");
 		}
 
 		std::cout << "\033[1;32m[+] Accepted new connection...\033[0m\n";
-		//std::cout << "\033[1;32mInvoking onConnect...\033[0m\n";
+		std::cout << "\033[1;32m[+] Invoking onConnect...\033[0m\n";
 
 		this->onConnect.Invoke(this->newConnection);
 
-		char* buffer = new char[40096];
+		char* buffer = new char[4096];
 
-		memset(buffer, 0, 40096);
+		memset(buffer, 0, 4096);
 
- 		if (recv(this->newConnection, buffer, 40096, 0) < 0) {
+ 		if (recv(this->newConnection, buffer, 4096, 0) < 0) {
 			std::cout << "\033[31m[-] Failed to read client request\033[0m\n";
 			std::cout << "\033[31m[-] Error code: " << WSAGetLastError() << "\033[0m\n";
+
+			closesocket(this->newConnection);
+			delete[] buffer;
 
 			throw std::runtime_error("Failed to read client request");
 		}
 
-		std::cout << "buffer: " << buffer << '\n';
 		std::cout << "\033[1;32m[+] Received client request\033[0m\n";
 		
-		std::string data = ""; 
+		std::string data = "";
 		data = std::string(buffer);
 
 		if (data == "") {
@@ -133,6 +137,17 @@ void Core::Net::TcpListener::Accept()
 
 			throw std::runtime_error("Failed to read client request");
 		}
+
+		#ifdef API_DEBUG
+			std::cout << "\033[1;34m[*] Request data:\n";
+			// split data by new line
+			std::vector<std::string> split = Core::Net::Request::Split(data, '\n');
+			for (int i = 0; i < split.size(); ++i) {
+				std::cout << "	" << split[i] << '\n';
+			}
+			std::cout << "\033[0m";
+		#endif
+
 		req = Request(data, this->newConnection);
 		this->onReceive.Invoke(req);
 

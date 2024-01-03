@@ -1,4 +1,6 @@
 #pragma once
+
+#include "Debug.hpp"
 #include "Event.hpp"
 #include "Router.hpp"
 #include <iostream>
@@ -46,7 +48,6 @@ namespace Core {
 				//Request req = Request();
 
 				int serverLen;
-				int bufferSize;
 
 				Event<void, SOCKET> onConnect;
 				Event<void, SOCKET> onDisconnect;
