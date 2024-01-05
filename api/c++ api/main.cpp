@@ -2,7 +2,7 @@
 
 #include "include/TcpListener.hpp"
 #include "include/Database.hpp"
-#include "include/json.hpp"
+#include "include/nlohmann json/json.hpp"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -14,12 +14,27 @@
 #include <openssl/sha.h>
 #undef max
 #undef min
-#include <jwt-cpp/jwt.h>
+#include <jwt-cpp/traits/nlohmann-json/traits.h>
 
 using httpReturn = std::tuple<Core::Net::ResponseType, std::string, std::optional<std::vector<std::string>>>;
 using json = nlohmann::json;
 
 static std::string const secret = "v6j9V4BfSx2GrdkqSaj8KlD1ujT3JzAhmkfgPSoHYkvYKdjomBYrbhq2WKH78bzVY3syflrljlAkE6F9GuPzbwp6tURXeEwBl0gIsMwixH57crfaW2acA3noMPnTkurdJy86LPB6ILiUFvrYsPT90zXycrZJE6ZXXzDmTS7J3lFqEsNQMqUgIns46KJPptNzhLiLE9jOuQ1cgLtYsrHyaS5umk5feQg34PZ4AV8RcJYbBHKGSSeWyxPzJHL02FY6Isgg7HFJPlwcDZsIpFD5utDA5mride1goSnWyelGehleKt4lh9h37psK2hmUJWn9Dr8DypICVkFKthUHfaegig2WwcEsA17TWWo5LTXeHdGPfVDXMNzr5HM5rIJgXQsR";
+static std::string const rsaSecret = R"(-----BEGIN RSA PRIVATE KEY-----
+MIICXQIBAAKBgQCmq4p7kuM9EgA19vaTfv+4nyylr0mi28aUiZV2ueUBu3alEyy9
+tWXBVlvpUJQsUgXPlitz0oYQGwRRjH9/A+caeXHSlVl0EmAOrTKxK2ElXlZizg/Z
+sDgWHKtJXFviZYmc7iZLlinD7/7xG+J7WzRHqBE7jQ/ksHCUzW1TkgR3bwIDAQAB
+AoGANIhQA0gWgKq6T0gSiwXV8yqUh3p64q6T5kCBUCUilcuxBzHGgdr5ghlGqgDg
+WyHVPAtQkdaSs+PYFh4LF40y22aSs9z8X2miJQ2qoNOuiw0/u/ur8Xk9oC4lVQ5B
+phZLv3duGq8WIruos+b8Z6JaEoGdqMC8XkPV4bk5kwPIFGUCQQDU+N4J6GUUyIhp
+LiTxpsyEOER9D/bfbpd0szu+ZlMaO4DjbpC68ifsRVQbiA2TSUGvXPebyFHNR0K8
+0lKy4F1DAkEAyFfigqCM77RhNMjGhOzb3PCTpm7VkjgEqqO4oS3NT3V5J+pJWdQN
+CwNW8k7VYO8rrOrwiaCrHqWcdbrxotDkZQJBAL07xE8ZZ3doF40dq0Xs55w0Qua8
+4Kb3JSxUdalgUkbkyElNXNw/fqm5kFpGMYnFdc/T009gVw8HWo1cdI7sPPECQQCY
+ghZi/BbtbnHE/cXpcGlaQiUTwDGCUnRy9ZjZ0YUGJNXq5bWa1QpsxMkOQaa7WLX1
+tw8Opak99jIpiPrix4PlAkBjLP3KvV0BzUgPP3P1Tlj3hJDQJxKZxmrpZKRJ/GA2
+bOkXOU193F+nMGkcpe+QPZvLa2ROfNpz35KQ1nB3tTyR
+-----END RSA PRIVATE KEY-----)";
 
 std::string Hash(std::string message) {
 	unsigned char hash[SHA512_DIGEST_LENGTH];
@@ -92,21 +107,16 @@ httpReturn Register(Core::Net::Request& req) {
 		return std::make_tuple(Core::Net::ResponseType::ALREADY_EXISTS, "User with username " + username + " already exists", std::optional<std::vector<std::string>>(false));
 	}
 
-	query = "SELECT id FROM users ORDER BY id DESC LIMIT 1;";
+	query = "SELECT last_value FROM users_id_seq";
 
 	res = Core::Database::database.Query(query);
 
-	std::optional<int> temp = res[0]["id"].as<std::optional<long long int>>();
-	long long int id = 1 * 52834;
-	if (temp.has_value()) {
-		id = (temp.value() + 1) * 52834;
-	}
+	std::optional<long long int> temp = res[0]["last_value"].as<std::optional<long long int>>();
+	long long int id = (temp.value_or(0) + 1) * 52834;
 
 	password = email + username + password + std::to_string(id) + secret;
 
 	std::string hashedSalted = Hash(password);
-
-	std::cout << "\033[1;34m[*] Password: " << hashedSalted << "\033[0m\n";
 
 	query = "INSERT INTO users (id, first_name, last_name, username, email, password) VALUES (DEFAULT, '" + fName + "', '" + lName + "', '" + username + "', '" + email + "', '" + hashedSalted + "');";
 
@@ -155,17 +165,99 @@ httpReturn Login(Core::Net::Request& req) {
 		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Incorrect password", std::optional<std::vector<std::string>>(false));
 	}
 
-	std::string jwtToken = jwt::create()
+	auto jwtToken = jwt::create<jwt::traits::nlohmann_json>()
 		.set_issuer("auth0")
 		.set_type("JWT")
-		.set_payload_claim("id", jwt::claim(std::to_string(id)))
-		.set_payload_claim("username", jwt::claim(username))
-		.set_payload_claim("email", jwt::claim(email))
+		.set_payload_claim("id", std::to_string(id))
+		.set_payload_claim("username", username)
+		.set_payload_claim("email", email)
 		.set_expires_at(std::chrono::system_clock::now() + std::chrono::seconds{ 3600 })
-		.set_issued_at(std::chrono::system_clock::now())
-		.sign(jwt::algorithm::hs512{ secret });
+		.set_issued_at(std::chrono::system_clock::now());
 
-	return std::make_tuple(Core::Net::ResponseType::OK, jwtToken, std::optional<std::vector<std::string>>(false));
+	std::string signedToken = jwtToken.sign(jwt::algorithm::rs512{"", rsaSecret, "", ""});
+
+	return std::make_tuple(Core::Net::ResponseType::OK, signedToken, std::optional<std::vector<std::string>>(false));
+}
+
+httpReturn GetUser(Core::Net::Request& req) {
+	std::string token = req.GetHeader(req.m_info.original, "Authorization");
+
+	// Remove Bearer
+	token.erase(0, 7);
+
+	if (token == "") {
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Missing token", std::optional<std::vector<std::string>>(false));
+	}
+
+	jwt::verifier<jwt::default_clock, jwt::traits::nlohmann_json> verifier = jwt::verify<jwt::traits::nlohmann_json>().allow_algorithm(jwt::algorithm::rs512{ "", rsaSecret, "", "" }).with_issuer("auth0");
+	auto decodedToken = jwt::decode<jwt::traits::nlohmann_json>(token);
+
+	std::error_code ec;
+	verifier.verify(decodedToken, ec);
+
+	if (ec) {
+		std::cout << "\033[1;31m[-] Error: " << ec.message() << "\033[0m\n";
+		return std::make_tuple(Core::Net::ResponseType::INTERNAL_ERROR, ec.message(), std::optional<std::vector<std::string>>(false));
+	}
+
+	json tokenJson = decodedToken.get_payload_json();
+	std::string id = tokenJson["id"];
+
+	if (id == "") {
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Missing id", std::optional<std::vector<std::string>>(false));
+	}
+	pqxx::result res = Core::Database::database.Query("SELECT * FROM users WHERE id = " + id + ";");
+
+	if (res.size() == 0) {
+		return std::make_tuple(Core::Net::ResponseType::NOT_FOUND, "User with id " + id + " not found", std::optional<std::vector<std::string>>(false));
+	}
+
+	json user;
+	user["id"] = res[0]["id"].as<int>();
+	user["first_name"] = res[0]["first_name"].as<std::string>();
+	user["last_name"] = res[0]["last_name"].as<std::string>();
+	user["username"] = res[0]["username"].as<std::string>();
+	user["email"] = res[0]["email"].as<std::string>();
+	//user["egn"] = res[0]["egn"].as<std::string>();
+
+	return std::make_tuple(Core::Net::ResponseType::OK, user.dump(), std::optional<std::vector<std::string>>(false));
+}
+
+httpReturn DeleteUser(Core::Net::Request& req) {
+	std::string token = req.GetHeader(req.m_info.original, "Authorization");
+
+	// Remove Bearer
+	token.erase(0, 7);
+
+	if (token == "") {
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Missing token", std::optional<std::vector<std::string>>(false));
+	}
+
+	jwt::verifier<jwt::default_clock, jwt::traits::nlohmann_json> verifier = jwt::verify<jwt::traits::nlohmann_json>().allow_algorithm(jwt::algorithm::rs512{ "", rsaSecret, "", "" }).with_issuer("auth0");
+	auto decodedToken = jwt::decode<jwt::traits::nlohmann_json>(token);
+
+	std::error_code ec;
+	verifier.verify(decodedToken, ec);
+
+	if (ec) {
+		std::cout << "\033[1;31m[-] Error: " << ec.message() << "\033[0m\n";
+		return std::make_tuple(Core::Net::ResponseType::INTERNAL_ERROR, ec.message(), std::optional<std::vector<std::string>>(false));
+	}
+
+	json tokenJson = decodedToken.get_payload_json();
+	std::string id = tokenJson["id"];
+
+	if (id == "") {
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Missing id", std::optional<std::vector<std::string>>(false));
+	}
+
+	pqxx::result res = Core::Database::database.Query("DELETE FROM users WHERE id = " + id + ";");
+
+	if (res.affected_rows() == 0) {
+		return std::make_tuple(Core::Net::ResponseType::NOT_FOUND, "User with id " + id + " not found", std::optional<std::vector<std::string>>(false));
+	}
+
+	return std::make_tuple(Core::Net::ResponseType::OK, "", std::optional<std::vector<std::string>>(false));
 }
 
 int main()
@@ -188,6 +280,8 @@ int main()
 
 		router.AddRoute("POST", "/register", Register);
 		router.AddRoute("POST", "/login", Login);
+		router.AddRoute("GET", "/user", GetUser);
+		router.AddRoute("DELETE", "/user", DeleteUser);
 
 		char* szHostName = new char[255];
 		gethostname(szHostName, 255);

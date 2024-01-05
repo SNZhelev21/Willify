@@ -105,7 +105,7 @@ void Core::Net::TcpListener::Accept()
 		}
 
 		std::cout << "\033[1;32m[+] Accepted new connection...\033[0m\n";
-		std::cout << "\033[1;32m[+] Invoking onConnect...\033[0m\n";
+		//std::cout << "\033[1;32m[+] Invoking onConnect...\033[0m\n";
 
 		this->onConnect.Invoke(this->newConnection);
 

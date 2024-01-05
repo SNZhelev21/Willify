@@ -1,6 +1,8 @@
 #include "../include/Router.hpp"
 
 void Core::Net::Router::Handle(Request& req) {
+	std::cout << "\033[1;32m[+] Requested path: " << req.m_info.route << "\033[0m\n";
+
 	#ifdef API_DEBUG
 		std::cout << "\033[1;34m[*] Handling request...\033[0m\n";
 		std::cout << "\033[1;34m	[*] Method: " << req.m_info.method << "\033[0m\n";
