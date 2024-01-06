@@ -1,7 +1,6 @@
 #pragma once
 
 #include "include/TcpListener.hpp"
-#include "include/Database.hpp"
 #include "include/nlohmann json/json.hpp"
 #include <iostream>
 #include <string>
@@ -9,6 +8,7 @@
 #include <regex>
 #include <map>
 #include "include/Backend/Users.hpp"
+#include "include/Backend/Stocks.hpp"
 
 int main()
 {
@@ -37,6 +37,15 @@ int main()
 		router.AddRoute("GET", "/admin/users", AdminGetUsers);
 		router.AddRoute("PUT", "/admin/user", AdminUpdateUser);
 		router.AddRoute("DELETE", "/admin/user", AdminDeleteUser);
+		router.AddRoute("GET", "/stock", GetStock);
+		router.AddRoute("GET", "/stocks", GetStocks);
+		router.AddRoute("POST", "/stock", CreateStock);
+		router.AddRoute("PUT", "/stock", UpdateStock);
+		router.AddRoute("DELETE", "/stock", DeleteStock);
+		router.AddRoute("GET", "/admin/stock", AdminGetStock);
+		router.AddRoute("GET", "/admin/stocks", AdminGetStocks);
+		router.AddRoute("PUT", "/admin/stock", AdminUpdateStock);
+		router.AddRoute("DELETE", "/admin/stock", AdminDeleteStock);
 
 		char* szHostName = new char[255];
 		gethostname(szHostName, 255);

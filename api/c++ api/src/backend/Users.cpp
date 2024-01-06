@@ -6,7 +6,7 @@ httpReturn Register(Core::Net::Request& req) {
 		body = json::parse(req.m_info.body);
 	}
 	catch (json::parse_error& e) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, e.what(), std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, e.what(), std::nullopt);
 	}
 
 	std::string fName = body["first_name"];
@@ -17,39 +17,39 @@ httpReturn Register(Core::Net::Request& req) {
 
 	//Validate data
 	if (fName == "" || lName == "" || username == "" || password == "" || email == "") {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Missing required fields", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Missing required fields", std::nullopt);
 	}
 
 	if (fName.length() < 3 || lName.length() < 3 || username.length() < 3 || password.length() < 3 || email.length() < 3) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Fields must be more than 3 characters", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Fields must be more than 3 characters", std::nullopt);
 	}
 
 	if (fName.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") != std::string::npos) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "First name must only contain letters", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "First name must only contain letters", std::nullopt);
 	}
 
 	if (lName.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") != std::string::npos) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Last name must only contain letters", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Last name must only contain letters", std::nullopt);
 	}
 
 	if (username.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") != std::string::npos) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Username must only contain letters and numbers", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Username must only contain letters and numbers", std::nullopt);
 	}
 
 	if (email.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@.") != std::string::npos) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Email must only contain letters, numbers, @ and .", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Email must only contain letters, numbers, @ and .", std::nullopt);
 	}
 
 	if (email.find_first_of("@") == std::string::npos) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Email must contain @", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Email must contain @", std::nullopt);
 	}
 
 	if (email.find_first_of(".") == std::string::npos) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Email must contain .", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Email must contain .", std::nullopt);
 	}
 
 	if (password.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%^&*") != std::string::npos) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Password must only contain letters, numbers, !, #, $, %, ^, & and *", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Password must only contain letters, numbers, !, #, $, %, ^, & and *", std::nullopt);
 	}
 
 	std::string query = "SELECT * FROM users WHERE username = '" + username + "';";
@@ -57,7 +57,7 @@ httpReturn Register(Core::Net::Request& req) {
 	auto res = Core::Database::database.Query(query);
 
 	if (res.size() > 0) {
-		return std::make_tuple(Core::Net::ResponseType::ALREADY_EXISTS, "User with username " + username + " already exists", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::ALREADY_EXISTS, "User with username " + username + " already exists", std::nullopt);
 	}
 
 	query = "SELECT last_value FROM users_id_seq";
@@ -75,7 +75,7 @@ httpReturn Register(Core::Net::Request& req) {
 
 	Core::Database::database.Query(query);
 
-	return std::make_tuple(Core::Net::ResponseType::CREATED, "", std::optional<std::vector<std::string>>(false));
+	return std::make_tuple(Core::Net::ResponseType::CREATED, "", std::nullopt);
 }
 
 httpReturn Login(Core::Net::Request& req) {
@@ -84,11 +84,11 @@ httpReturn Login(Core::Net::Request& req) {
 		body = json::parse(req.m_info.body);
 	}
 	catch (json::parse_error& e) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, e.what(), std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, e.what(), std::nullopt);
 	}
 
 	if (!body.contains("username") || !body.contains("password")) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Missing required fields", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Missing required fields", std::nullopt);
 	}
 
 	std::string username = body["username"];
@@ -99,7 +99,7 @@ httpReturn Login(Core::Net::Request& req) {
 	auto res = Core::Database::database.Query(query);
 
 	if (res.size() == 0) {
-		return std::make_tuple(Core::Net::ResponseType::NOT_FOUND, "User with username " + username + " not found", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::NOT_FOUND, "User with username " + username + " not found", std::nullopt);
 	}
 
 	int id = res[0]["id"].as<int>();
@@ -116,7 +116,7 @@ httpReturn Login(Core::Net::Request& req) {
 	std::cout << "\033[1;34m[*] DB password: " << dbPassword << "\033[0m\n";
 #endif
 	if (password != dbPassword) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Incorrect password", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Incorrect password", std::nullopt);
 	}
 
 	auto jwtToken = jwt::create<jwt::traits::nlohmann_json>()
@@ -131,7 +131,7 @@ httpReturn Login(Core::Net::Request& req) {
 
 	std::string signedToken = jwtToken.sign(jwt::algorithm::rs512{ "", rsaSecret, "", "" });
 
-	return std::make_tuple(Core::Net::ResponseType::OK, signedToken, std::optional<std::vector<std::string>>(false));
+	return std::make_tuple(Core::Net::ResponseType::OK, signedToken, std::nullopt);
 }
 
 httpReturn GetUser(Core::Net::Request& req) {
@@ -141,7 +141,7 @@ httpReturn GetUser(Core::Net::Request& req) {
 	token.erase(0, 7);
 
 	if (token == "") {
-		return std::make_tuple(Core::Net::ResponseType::NOT_AUTHORIZED, "Missing token", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::NOT_AUTHORIZED, "Missing token", std::nullopt);
 	}
 
 	jwt::verifier<jwt::default_clock, jwt::traits::nlohmann_json> verifier = jwt::verify<jwt::traits::nlohmann_json>().allow_algorithm(jwt::algorithm::rs512{ "", rsaSecret, "", "" }).with_issuer("auth0");
@@ -152,19 +152,19 @@ httpReturn GetUser(Core::Net::Request& req) {
 
 	if (ec) {
 		std::cout << "\033[1;31m[-] Error: " << ec.message() << "\033[0m\n";
-		return std::make_tuple(Core::Net::ResponseType::INTERNAL_ERROR, ec.message(), std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::INTERNAL_ERROR, ec.message(), std::nullopt);
 	}
 
 	json tokenJson = decodedToken.get_payload_json();
 	std::string id = tokenJson["id"];
 
 	if (id == "") {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Missing id", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Missing id", std::nullopt);
 	}
 	pqxx::result res = Core::Database::database.Query("SELECT * FROM users WHERE id = " + id + ";");
 
 	if (res.size() == 0) {
-		return std::make_tuple(Core::Net::ResponseType::NOT_FOUND, "User with id " + id + " not found", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::NOT_FOUND, "User with id " + id + " not found", std::nullopt);
 	}
 
 	json user;
@@ -176,7 +176,7 @@ httpReturn GetUser(Core::Net::Request& req) {
 	user["egn"] = res[0]["egn"].as<std::optional<std::string>>().value_or("");
 	user["role"] = res[0]["role"].as<std::string>();
 
-	return std::make_tuple(Core::Net::ResponseType::JSON, user.dump(), std::optional<std::vector<std::string>>(false));
+	return std::make_tuple(Core::Net::ResponseType::JSON, user.dump(), std::nullopt);
 }
 
 httpReturn DeleteUser(Core::Net::Request& req) {
@@ -186,7 +186,7 @@ httpReturn DeleteUser(Core::Net::Request& req) {
 	token.erase(0, 7);
 
 	if (token == "") {
-		return std::make_tuple(Core::Net::ResponseType::NOT_AUTHORIZED, "Missing token", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::NOT_AUTHORIZED, "Missing token", std::nullopt);
 	}
 
 	jwt::verifier<jwt::default_clock, jwt::traits::nlohmann_json> verifier = jwt::verify<jwt::traits::nlohmann_json>().allow_algorithm(jwt::algorithm::rs512{ "", rsaSecret, "", "" }).with_issuer("auth0");
@@ -197,23 +197,23 @@ httpReturn DeleteUser(Core::Net::Request& req) {
 
 	if (ec) {
 		std::cout << "\033[1;31m[-] Error: " << ec.message() << "\033[0m\n";
-		return std::make_tuple(Core::Net::ResponseType::INTERNAL_ERROR, ec.message(), std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::INTERNAL_ERROR, ec.message(), std::nullopt);
 	}
 
 	json tokenJson = decodedToken.get_payload_json();
 	std::string id = tokenJson["id"];
 
 	if (id == "") {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Missing id", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Missing id", std::nullopt);
 	}
 
 	pqxx::result res = Core::Database::database.Query("DELETE FROM users WHERE id = " + id + ";");
 
 	if (res.affected_rows() == 0) {
-		return std::make_tuple(Core::Net::ResponseType::NOT_FOUND, "User with id " + id + " not found", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::NOT_FOUND, "User with id " + id + " not found", std::nullopt);
 	}
 
-	return std::make_tuple(Core::Net::ResponseType::OK, "", std::optional<std::vector<std::string>>(false));
+	return std::make_tuple(Core::Net::ResponseType::OK, "User deleted", std::nullopt);
 }
 
 httpReturn UpdateUser(Core::Net::Request& req) {
@@ -223,7 +223,7 @@ httpReturn UpdateUser(Core::Net::Request& req) {
 	token.erase(0, 7);
 
 	if (token == "") {
-		return std::make_tuple(Core::Net::ResponseType::NOT_AUTHORIZED, "Missing token", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::NOT_AUTHORIZED, "Missing token", std::nullopt);
 	}
 
 	jwt::verifier<jwt::default_clock, jwt::traits::nlohmann_json> verifier = jwt::verify<jwt::traits::nlohmann_json>().allow_algorithm(jwt::algorithm::rs512{ "", rsaSecret, "", "" }).with_issuer("auth0");
@@ -234,7 +234,7 @@ httpReturn UpdateUser(Core::Net::Request& req) {
 
 	if (ec) {
 		std::cout << "\033[1;31m[-] Error: " << ec.message() << "\033[0m\n";
-		return std::make_tuple(Core::Net::ResponseType::INTERNAL_ERROR, ec.message(), std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::INTERNAL_ERROR, ec.message(), std::nullopt);
 	}
 
 	json tokenJson = decodedToken.get_payload_json();
@@ -243,7 +243,7 @@ httpReturn UpdateUser(Core::Net::Request& req) {
 		body = json::parse(req.m_info.body);
 	}
 	catch (json::parse_error& e) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, e.what(), std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, e.what(), std::nullopt);
 	}
 
 	std::string fName = body["first_name"];
@@ -253,40 +253,47 @@ httpReturn UpdateUser(Core::Net::Request& req) {
 
 	//Validate data
 	if (fName == "" || lName == "" || username == "" || email == "") {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Missing required fields", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Missing required fields", std::nullopt);
 	}
 
 	if (fName.length() < 3 || lName.length() < 3 || username.length() < 3 || email.length() < 3) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Fields must be more than 3 characters", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Fields must be more than 3 characters", std::nullopt);
 	}
 
 	if (fName.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") != std::string::npos) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "First name must only contain letters", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "First name must only contain letters", std::nullopt);
 	}
 
 	if (lName.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") != std::string::npos) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Last name must only contain letters", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Last name must only contain letters", std::nullopt);
 	}
 
 	if (username.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") != std::string::npos) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Username must only contain letters and numbers", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Username must only contain letters and numbers", std::nullopt);
 	}
 
 	if (email.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@.") != std::string::npos) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Email must only contain letters, numbers, @ and .", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Email must only contain letters, numbers, @ and .", std::nullopt);
 	}
 
 	if (email.find_first_of("@") == std::string::npos) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Email must contain @", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Email must contain @", std::nullopt);
 	}
 
 	if (email.find_first_of(".") == std::string::npos) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Email must contain .", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Email must contain .", std::nullopt);
 	}
 
 	Core::Database::database.Query("UPDATE users SET first_name = '" + fName + "', last_name = '" + lName + "', username = '" + username + "', email = '" + email + "' WHERE id = " + tokenJson["id"].get<std::string>() + ";");
 
-	return std::make_tuple(Core::Net::ResponseType::OK, "", std::optional<std::vector<std::string>>(false));
+	json user;
+	user["id"] = tokenJson["id"];
+	user["first_name"] = fName;
+	user["last_name"] = lName;
+	user["username"] = username;
+	user["email"] = email;
+
+	return std::make_tuple(Core::Net::ResponseType::OK, user.dump(), std::nullopt);
 }
 
 httpReturn AdminUpdateUser(Core::Net::Request& req) {
@@ -296,7 +303,7 @@ httpReturn AdminUpdateUser(Core::Net::Request& req) {
 	token.erase(0, 7);
 
 	if (token == "") {
-		return std::make_tuple(Core::Net::ResponseType::NOT_AUTHORIZED, "Missing token", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::NOT_AUTHORIZED, "Missing token", std::nullopt);
 	}
 
 	jwt::verifier<jwt::default_clock, jwt::traits::nlohmann_json> verifier = jwt::verify<jwt::traits::nlohmann_json>().allow_algorithm(jwt::algorithm::rs512{ "", rsaSecret, "", "" }).with_issuer("auth0");
@@ -307,13 +314,13 @@ httpReturn AdminUpdateUser(Core::Net::Request& req) {
 
 	if (ec) {
 		std::cout << "\033[1;31m[-] Error: " << ec.message() << "\033[0m\n";
-		return std::make_tuple(Core::Net::ResponseType::INTERNAL_ERROR, ec.message(), std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::INTERNAL_ERROR, ec.message(), std::nullopt);
 	}
 
 	json tokenJson = decodedToken.get_payload_json();
 
 	if (tokenJson["role"].get<std::string>() != "admin") {
-		return std::make_tuple(Core::Net::ResponseType::NOT_AUTHORIZED, "Only admins can access this route", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::NOT_AUTHORIZED, "Only admins can access this route", std::nullopt);
 	}
 
 	json body;
@@ -321,7 +328,7 @@ httpReturn AdminUpdateUser(Core::Net::Request& req) {
 		body = json::parse(req.m_info.body);
 	}
 	catch (json::parse_error& e) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, e.what(), std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, e.what(), std::nullopt);
 	}
 
 	std::string fName = body["first_name"];
@@ -330,54 +337,76 @@ httpReturn AdminUpdateUser(Core::Net::Request& req) {
 	std::string email = body["email"];
 	std::string id = body["user_id"];
 	std::string egn = body["egn"];
-
+	std::string disabled = body["disabled"];
 
 	//Validate data
-	if (fName == "" || lName == "" || username == "" || email == "" || id == "" || egn == "") {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Missing required fields", std::optional<std::vector<std::string>>(false));
+	if (fName == "" || lName == "" || username == "" || email == "" || id == "" || egn == "" || disabled == "") {
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Missing required fields", std::nullopt);
 	}
 
 	if (fName.length() < 3 || lName.length() < 3 || username.length() < 3 || email.length() < 3) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Fields must be more than 3 characters", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Fields must be more than 3 characters", std::nullopt);
 	}
 
 	if (egn.length() != 10) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "EGN must be 10 characters long", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "EGN must be 10 characters long", std::nullopt);
 	}
 
 	if (fName.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") != std::string::npos) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "First name must only contain letters", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "First name must only contain letters", std::nullopt);
 	}
 
 	if (lName.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") != std::string::npos) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Last name must only contain letters", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Last name must only contain letters", std::nullopt);
 	}
 
 	if (username.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789") != std::string::npos) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Username must only contain letters and numbers", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Username must only contain letters and numbers", std::nullopt);
 	}
 
 	if (email.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@.") != std::string::npos) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Email must only contain letters, numbers, @ and .", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Email must only contain letters, numbers, @ and .", std::nullopt);
 	}
 
 	if (email.find_first_of("@") == std::string::npos) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Email must contain @", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Email must contain @", std::nullopt);
 	}
 
 	if (email.find_first_of(".") == std::string::npos) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Email must contain .", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Email must contain .", std::nullopt);
 	}
 
 	if (id.find_first_not_of("0123456789") != std::string::npos) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "User id must only contain numbers", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "User id must only contain numbers", std::nullopt);
 	}
 
 	if (egn.find_first_not_of("0123456789") != std::string::npos) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "EGN must only contain numbers", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "EGN must only contain numbers", std::nullopt);
 	}
 
-	Core::Database::database.Query("UPDATE users SET first_name = '" + fName + "', last_name = '" + lName + "', username = '" + username + "', email = '" + email + "', egn = '" + egn + "' WHERE id = " + id + ";");
+	if (disabled != "true" && disabled != "false") {
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Disabled must be true or false", std::nullopt);
+	}
+
+	if (disabled == "true") {
+		disabled = "yes";
+	}
+	else {
+		disabled = "no";
+	}
+
+	Core::Database::database.Query("UPDATE users SET first_name = '" + fName + "', last_name = '" + lName + "', username = '" + username + "', email = '" + email + "', egn = '" + egn + "', disabled = '" + disabled + "' WHERE id = " + id + ";");
+
+	json user;
+	user["id"] = id;
+	user["first_name"] = fName;
+	user["last_name"] = lName;
+	user["username"] = username;
+	user["email"] = email;
+	user["egn"] = egn;
+	user["disabled"] = disabled;
+
+	return std::make_tuple(Core::Net::ResponseType::OK, user.dump(), std::nullopt);
 }
 
 httpReturn AdminDeleteUser(Core::Net::Request& req) {
@@ -387,7 +416,7 @@ httpReturn AdminDeleteUser(Core::Net::Request& req) {
 	token.erase(0, 7);
 
 	if (token == "") {
-		return std::make_tuple(Core::Net::ResponseType::NOT_AUTHORIZED, "Missing token", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::NOT_AUTHORIZED, "Missing token", std::nullopt);
 	}
 
 	jwt::verifier<jwt::default_clock, jwt::traits::nlohmann_json> verifier = jwt::verify<jwt::traits::nlohmann_json>().allow_algorithm(jwt::algorithm::rs512{ "", rsaSecret, "", "" }).with_issuer("auth0");
@@ -398,13 +427,13 @@ httpReturn AdminDeleteUser(Core::Net::Request& req) {
 
 	if (ec) {
 		std::cout << "\033[1;31m[-] Error: " << ec.message() << "\033[0m\n";
-		return std::make_tuple(Core::Net::ResponseType::INTERNAL_ERROR, ec.message(), std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::INTERNAL_ERROR, ec.message(), std::nullopt);
 	}
 
 	json tokenJson = decodedToken.get_payload_json();
 
 	if (tokenJson["role"].get<std::string>() != "admin") {
-		return std::make_tuple(Core::Net::ResponseType::NOT_AUTHORIZED, "Only admins can access this route", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::NOT_AUTHORIZED, "Only admins can access this route", std::nullopt);
 	}
 
 	json body;
@@ -412,23 +441,23 @@ httpReturn AdminDeleteUser(Core::Net::Request& req) {
 		body = json::parse(req.m_info.body);
 	}
 	catch (json::parse_error& e) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, e.what(), std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, e.what(), std::nullopt);
 	}
 
 	std::string id = body["user_id"];
 
 	//Validate data
 	if (id == "") {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Missing required fields", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Missing required fields", std::nullopt);
 	}
 
 	if (id.find_first_not_of("0123456789") != std::string::npos) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "User id must only contain numbers", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "User id must only contain numbers", std::nullopt);
 	}
 
 	Core::Database::database.Query("DELETE FROM users WHERE id = " + id + ";");
 
-	return std::make_tuple(Core::Net::ResponseType::OK, "", std::optional<std::vector<std::string>>(false));
+	return std::make_tuple(Core::Net::ResponseType::OK, "", std::nullopt);
 }
 
 httpReturn AdminGetUser(Core::Net::Request& req) {
@@ -438,7 +467,7 @@ httpReturn AdminGetUser(Core::Net::Request& req) {
 	token.erase(0, 7);
 
 	if (token == "") {
-		return std::make_tuple(Core::Net::ResponseType::NOT_AUTHORIZED, "Missing token", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::NOT_AUTHORIZED, "Missing token", std::nullopt);
 	}
 
 	jwt::verifier<jwt::default_clock, jwt::traits::nlohmann_json> verifier = jwt::verify<jwt::traits::nlohmann_json>().allow_algorithm(jwt::algorithm::rs512{ "", rsaSecret, "", "" }).with_issuer("auth0");
@@ -449,13 +478,13 @@ httpReturn AdminGetUser(Core::Net::Request& req) {
 
 	if (ec) {
 		std::cout << "\033[1;31m[-] Error: " << ec.message() << "\033[0m\n";
-		return std::make_tuple(Core::Net::ResponseType::INTERNAL_ERROR, ec.message(), std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::INTERNAL_ERROR, ec.message(), std::nullopt);
 	}
 
 	json tokenJson = decodedToken.get_payload_json();
 
 	if (tokenJson["role"].get<std::string>() != "admin") {
-		return std::make_tuple(Core::Net::ResponseType::NOT_AUTHORIZED, "Only admins can access this route", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::NOT_AUTHORIZED, "Only admins can access this route", std::nullopt);
 	}
 
 	json body;
@@ -463,24 +492,24 @@ httpReturn AdminGetUser(Core::Net::Request& req) {
 		body = json::parse(req.m_info.body);
 	}
 	catch (json::parse_error& e) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, e.what(), std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, e.what(), std::nullopt);
 	}
 
 	std::string id = body["user_id"];
 
 	//Validate data
 	if (id == "") {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Missing required fields", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Missing required fields", std::nullopt);
 	}
 
 	if (id.find_first_not_of("0123456789") != std::string::npos) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "User id must only contain numbers", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "User id must only contain numbers", std::nullopt);
 	}
 
 	pqxx::result res = Core::Database::database.Query("SELECT * FROM users WHERE id = " + id + ";");
 
 	if (res.size() == 0) {
-		return std::make_tuple(Core::Net::ResponseType::NOT_FOUND, "User with id " + id + " not found", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::NOT_FOUND, "User with id " + id + " not found", std::nullopt);
 	}
 
 	json user;
@@ -490,6 +519,7 @@ httpReturn AdminGetUser(Core::Net::Request& req) {
 	user["username"] = res[0]["username"].as<std::string>();
 	user["email"] = res[0]["email"].as<std::string>();
 
+	return std::make_tuple(Core::Net::ResponseType::JSON, user.dump(), std::nullopt);
 }
 
 httpReturn AdminGetUsers(Core::Net::Request& req) {
@@ -499,7 +529,7 @@ httpReturn AdminGetUsers(Core::Net::Request& req) {
 	token.erase(0, 7);
 
 	if (token == "") {
-		return std::make_tuple(Core::Net::ResponseType::NOT_AUTHORIZED, "Missing token", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::NOT_AUTHORIZED, "Missing token", std::nullopt);
 	}
 
 	jwt::verifier<jwt::default_clock, jwt::traits::nlohmann_json> verifier = jwt::verify<jwt::traits::nlohmann_json>().allow_algorithm(jwt::algorithm::rs512{ "", rsaSecret, "", "" }).with_issuer("auth0");
@@ -510,13 +540,13 @@ httpReturn AdminGetUsers(Core::Net::Request& req) {
 
 	if (ec) {
 		std::cout << "\033[1;31m[-] Error: " << ec.message() << "\033[0m\n";
-		return std::make_tuple(Core::Net::ResponseType::INTERNAL_ERROR, ec.message(), std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::INTERNAL_ERROR, ec.message(), std::nullopt);
 	}
 
 	json tokenJson = decodedToken.get_payload_json();
 
 	if (tokenJson["role"].get<std::string>() != "admin") {
-		return std::make_tuple(Core::Net::ResponseType::NOT_AUTHORIZED, "Only admins can access this route", std::optional<std::vector<std::string>>(false));
+		return std::make_tuple(Core::Net::ResponseType::NOT_AUTHORIZED, "Only admins can access this route", std::nullopt);
 	}
 
 	pqxx::result res = Core::Database::database.Query("SELECT * FROM users;");
@@ -535,5 +565,5 @@ httpReturn AdminGetUsers(Core::Net::Request& req) {
 		users.push_back(user);
 	}
 
-	return std::make_tuple(Core::Net::ResponseType::JSON, users.dump(), std::optional<std::vector<std::string>>(false));
+	return std::make_tuple(Core::Net::ResponseType::JSON, users.dump(), std::nullopt);
 }
