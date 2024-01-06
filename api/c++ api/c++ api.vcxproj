@@ -138,6 +138,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\backend\Hash.cpp" />
+    <ClCompile Include="src\backend\Users.cpp" />
     <ClCompile Include="src\Core.cpp" />
     <ClCompile Include="src\Database.cpp" />
     <ClCompile Include="src\Request.cpp" />
@@ -145,6 +147,9 @@
     <ClCompile Include="src\TcpListener.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\backend\Hash.hpp" />
+    <ClInclude Include="include\backend\Secrets.hpp" />
+    <ClInclude Include="include\backend\Users.hpp" />
     <ClInclude Include="include\Core.hpp" />
     <ClInclude Include="include\ctre.hpp" />
     <ClInclude Include="include\Database.hpp" />

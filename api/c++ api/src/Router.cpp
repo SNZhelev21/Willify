@@ -79,7 +79,12 @@ void Core::Net::Router::Respond(Request& req, returnType response) {
 	std::string header = "HTTP/1.1 ";
 
 	if (type == ResponseType::OK || type == ResponseType::CREATED || type == ResponseType::JSON || type == ResponseType::HTML || type == ResponseType::TEXT) {
-		header += "200 OK\r\n";
+		if (type != ResponseType::CREATED) {
+			header += "200 OK\r\n";
+		}
+		else {
+			header += "201 Created\r\n";
+		}
 
 		// CORS
 		header += "Access-Control-Allow-Origin: https://www.google.com\r\n";
