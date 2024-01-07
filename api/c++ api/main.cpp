@@ -9,6 +9,7 @@
 #include <map>
 #include "include/Backend/Users.hpp"
 #include "include/Backend/Stocks.hpp"
+#include "include/Backend/Wills.hpp"
 
 int main()
 {
@@ -46,6 +47,17 @@ int main()
 		router.AddRoute("GET", "/admin/stocks", AdminGetStocks);
 		router.AddRoute("PUT", "/admin/stock", AdminUpdateStock);
 		router.AddRoute("DELETE", "/admin/stock", AdminDeleteStock);
+		router.AddRoute("GET", "/will", GetWill);
+		router.AddRoute("GET", "/wills", GetWills);
+		router.AddRoute("POST", "/will", CreateWill);
+		router.AddRoute("PUT", "/will", UpdateWill);
+		router.AddRoute("DELETE", "/will", DeleteWill);
+		router.AddRoute("DELETE", "/wills", DeleteWills);
+		router.AddRoute("GET", "/admin/wills", AdminGetWills);
+		router.AddRoute("GET", "/admin/will", AdminGetWill);
+		router.AddRoute("PUT", "/admin/will", AdminUpdateWill);
+		router.AddRoute("DELETE", "/admin/will", AdminDeleteWill);
+		router.AddRoute("POST", "/admin/will/do", DoWill);
 
 		char* szHostName = new char[255];
 		gethostname(szHostName, 255);

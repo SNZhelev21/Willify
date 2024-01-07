@@ -44,6 +44,11 @@ namespace Core {
 
 				return res;
 			}
-		}static database;
+		};
+
+		#ifndef db
+			#define db
+			static Database database;
+		#endif
 	}
 }
