@@ -106,7 +106,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)libpqxx-$(Configuration)\include;$(SolutionDir)openssl\include;$(SolutionDir)jwt-cpp\include;$(SolutionDir)cpr\curl\include;$(SolutionDir)cpr\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)c++ api\libpqxx-$(Configuration)\include;$(SolutionDir)c++ api\openssl\include;$(SolutionDir)c++ api\jwt-cpp\include;$(SolutionDir)c++ api\cpr\curl\include;$(SolutionDir)c++ api\cpr\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TranslateIncludes>false</TranslateIncludes>
       <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
     </ClCompile>
@@ -114,10 +114,10 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>libcurl-d_imp.lib;cpr.lib;libssl.lib;libcrypto.lib;libpq.lib;pqxx.lib;ws2_32.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)libpqxx-$(Configuration)\lib;$(SolutionDir)openssl\lib;$(SolutionDir)cpr\libs\$(Configuration)-libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)c++ api\libpqxx-$(Configuration)\lib;$(SolutionDir)c++ api\openssl\lib;$(SolutionDir)c++ api\cpr\libs\$(Configuration)-libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PreBuildEvent>
-      <Command>copy /y "$(SolutionDir)cpr\dlls\$(Configuration)-dlls\*.dll" "$(SolutionDir)x64\$(Configuration)"</Command>
+      <Command>copy /y "$(SolutionDir)c++ api\cpr\dlls\$(Configuration)-dlls\*.dll" "$(SolutionDir)x64\$(Configuration)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -130,7 +130,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)libpqxx-$(Configuration)\include;$(SolutionDir)openssl\include;$(SolutionDir)jwt-cpp\include;$(SolutionDir)cpr\curl\include;$(SolutionDir)cpr\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)c++ api\libpqxx-$(Configuration)\include;$(SolutionDir)c++ api\openssl\include;$(SolutionDir)c++ api\jwt-cpp\include;$(SolutionDir)c++ api\cpr\curl\include;$(SolutionDir)c++ api\cpr\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TranslateIncludes>false</TranslateIncludes>
       <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
     </ClCompile>
@@ -140,10 +140,10 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>zlib.lib;libcurl_imp.lib;cpr.lib;libssl.lib;libcrypto.lib;libpq.lib;pqxx.lib;ws2_32.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)libpqxx-$(Configuration)\lib;$(SolutionDir)openssl\lib;$(SolutionDir)cpr\libs\$(Configuration)-libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)c++ api\libpqxx-$(Configuration)\lib;$(SolutionDir)c++ api\openssl\lib;$(SolutionDir)c++ api\cpr\libs\$(Configuration)-libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PreBuildEvent>
-      <Command>copy /y "$(SolutionDir)cpr\dlls\$(Configuration)-dlls\*.dll" "$(SolutionDir)x64\$(Configuration)"</Command>
+      <Command>copy /y "$(SolutionDir)c++ api\cpr\dlls\$(Configuration)-dlls\*.dll" "$(SolutionDir)x64\$(Configuration)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
