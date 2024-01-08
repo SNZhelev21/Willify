@@ -45,9 +45,6 @@
     <ClCompile Include="src\backend\Wills.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="include\backend\Wills.hpp">
-      <Filter>Header Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Core.hpp">
@@ -90,6 +87,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\backend\Stocks.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\backend\Wills.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

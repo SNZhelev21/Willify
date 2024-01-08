@@ -7,9 +7,9 @@
 #include <vector>
 #include <regex>
 #include <map>
-#include "include/Backend/Users.hpp"
-#include "include/Backend/Stocks.hpp"
-#include "include/Backend/Wills.hpp"
+#include "include/backend/Users.hpp"
+#include "include/backend/Stocks.hpp"
+#include "include/backend/Wills.hpp"
 
 int main()
 {

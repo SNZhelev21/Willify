@@ -497,32 +497,32 @@ httpReturn AdminGetWills(Core::Net::Request& req) {
 
 httpReturn AdminGetWill(Core::Net::Request& req) {
 	std::string token = Core::Net::Request::GetHeader(req.m_info.original, "Authorization");
-	
+
 	// Remove Bearer
 	token.erase(0, 7);
-	
+
 	if (token == "") {
 		return std::make_tuple(Core::Net::ResponseType::NOT_AUTHORIZED, "Missing token", std::optional<std::vector<std::string>>(false));
 	}
-	
+
 	jwt::verifier<jwt::default_clock, jwt::traits::nlohmann_json> verifier = jwt::verify<jwt::traits::nlohmann_json>().allow_algorithm(jwt::algorithm::rs512{ "", rsaSecret, "", "" }).with_issuer("auth0");
 	auto decodedToken = jwt::decode<jwt::traits::nlohmann_json>(token);
-	
+
 	std::error_code ec;
 	verifier.verify(decodedToken, ec);
-	
+
 	if (ec) {
 		std::cout << "\033[1;31m[-] Error: " << ec.message() << "\033[0m\n";
 		return std::make_tuple(Core::Net::ResponseType::INTERNAL_ERROR, ec.message(), std::optional<std::vector<std::string>>(false));
 	}
-	
+
 	json tokenJson = decodedToken.get_payload_json();
 	std::string id = tokenJson["id"];
-	
+
 	if (tokenJson["role"].get<std::string>() != "admin") {
 		return std::make_tuple(Core::Net::ResponseType::NOT_AUTHORIZED, "Only admins can access this route", std::nullopt);
 	}
-	
+
 	json body;
 	try {
 		body = json::parse(req.m_info.body);
@@ -530,18 +530,18 @@ httpReturn AdminGetWill(Core::Net::Request& req) {
 	catch (json::parse_error& e) {
 		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, e.what(), std::optional<std::vector<std::string>>(false));
 	}
-	
+
 	std::string willId = body["will_id"];
-	
+
 	if (willId == "") {
 		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Missing fields", std::nullopt);
 	}
-	
+
 	// Validate data
 	if (willId.find_first_not_of("0123456789") != std::string::npos) {
 		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Invalid will id", std::nullopt);
 	}
-	
+
 	// Check if will exists
 	pqxx::result res = Core::Database::database.Query("SELECT * FROM wills WHERE id = " + willId + ";");
 
@@ -688,32 +688,32 @@ httpReturn AdminUpdateWill(Core::Net::Request& req) {
 
 httpReturn AdminDeleteWill(Core::Net::Request& req) {
 	std::string token = Core::Net::Request::GetHeader(req.m_info.original, "Authorization");
-	
+
 	// Remove Bearer
 	token.erase(0, 7);
-	
+
 	if (token == "") {
 		return std::make_tuple(Core::Net::ResponseType::NOT_AUTHORIZED, "Missing token", std::optional<std::vector<std::string>>(false));
 	}
-	
+
 	jwt::verifier<jwt::default_clock, jwt::traits::nlohmann_json> verifier = jwt::verify<jwt::traits::nlohmann_json>().allow_algorithm(jwt::algorithm::rs512{ "", rsaSecret, "", "" }).with_issuer("auth0");
 	auto decodedToken = jwt::decode<jwt::traits::nlohmann_json>(token);
-	
+
 	std::error_code ec;
 	verifier.verify(decodedToken, ec);
-	
+
 	if (ec) {
 		std::cout << "\033[1;31m[-] Error: " << ec.message() << "\033[0m\n";
 		return std::make_tuple(Core::Net::ResponseType::INTERNAL_ERROR, ec.message(), std::optional<std::vector<std::string>>(false));
 	}
-	
+
 	json tokenJson = decodedToken.get_payload_json();
 	std::string id = tokenJson["id"];
-	
+
 	if (tokenJson["role"].get<std::string>() != "admin") {
 		return std::make_tuple(Core::Net::ResponseType::NOT_AUTHORIZED, "Only admins can access this route", std::nullopt);
 	}
-	
+
 	json body;
 	try {
 		body = json::parse(req.m_info.body);
@@ -721,18 +721,18 @@ httpReturn AdminDeleteWill(Core::Net::Request& req) {
 	catch (json::parse_error& e) {
 		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, e.what(), std::optional<std::vector<std::string>>(false));
 	}
-	
+
 	std::string willId = body["will_id"];
-	
+
 	if (willId == "") {
 		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Missing fields", std::nullopt);
 	}
-	
+
 	// Validate data
 	if (willId.find_first_not_of("0123456789") != std::string::npos) {
 		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Invalid will id", std::nullopt);
 	}
-	
+
 	// Check if will exists
 	pqxx::result res = Core::Database::database.Query("SELECT * FROM wills WHERE id = " + willId + ";");
 

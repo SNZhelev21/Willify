@@ -107,15 +107,17 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>$(SolutionDir)libpqxx-$(Configuration)\include;$(SolutionDir)openssl\include;$(SolutionDir)jwt-cpp\include;$(SolutionDir)cpr\curl\include;$(SolutionDir)cpr\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <TranslateIncludes>false</TranslateIncludes>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>libcurl-d_imp.lib;cpr.lib;libssl.lib;libcrypto.lib;libpq.lib;pqxx.lib;ws2_32.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)libpqxx-$(Configuration)\lib;$(SolutionDir)openssl\lib;$(SolutionDir)cpr\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)libpqxx-$(Configuration)\lib;$(SolutionDir)openssl\lib;$(SolutionDir)cpr\libs\$(Configuration)-libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PreBuildEvent>
-      <Command>copy /y "$(SolutionDir)cpr\bin\$(Configuration)\*.dll" "$(SolutionDir)x64\$(Configuration)"</Command>
+      <Command>copy /y "$(SolutionDir)cpr\dlls\$(Configuration)-dlls\*.dll" "$(SolutionDir)x64\$(Configuration)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -129,6 +131,8 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>$(SolutionDir)libpqxx-$(Configuration)\include;$(SolutionDir)openssl\include;$(SolutionDir)jwt-cpp\include;$(SolutionDir)cpr\curl\include;$(SolutionDir)cpr\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <TranslateIncludes>false</TranslateIncludes>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -136,14 +140,13 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>zlib.lib;libcurl_imp.lib;cpr.lib;libssl.lib;libcrypto.lib;libpq.lib;pqxx.lib;ws2_32.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)libpqxx-$(Configuration)\lib;$(SolutionDir)openssl\lib;$(SolutionDir)cpr\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)libpqxx-$(Configuration)\lib;$(SolutionDir)openssl\lib;$(SolutionDir)cpr\libs\$(Configuration)-libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PreBuildEvent>
-      <Command>copy /y "$(SolutionDir)cpr\bin\$(Configuration)\*.dll" "$(SolutionDir)x64\$(Configuration)"</Command>
+      <Command>copy /y "$(SolutionDir)cpr\dlls\$(Configuration)-dlls\*.dll" "$(SolutionDir)x64\$(Configuration)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="include\backend\Wills.hpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="src\backend\Hash.cpp" />
     <ClCompile Include="src\backend\Stocks.cpp" />
@@ -160,6 +163,7 @@
     <ClInclude Include="include\backend\Secrets.hpp" />
     <ClInclude Include="include\backend\Stocks.hpp" />
     <ClInclude Include="include\backend\Users.hpp" />
+    <ClInclude Include="include\backend\Wills.hpp" />
     <ClInclude Include="include\Core.hpp" />
     <ClInclude Include="include\ctre.hpp" />
     <ClInclude Include="include\Database.hpp" />
