@@ -30,9 +30,6 @@
     <ClCompile Include="src\Router.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Database.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\backend\Hash.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

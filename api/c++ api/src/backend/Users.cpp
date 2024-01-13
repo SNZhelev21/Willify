@@ -115,6 +115,7 @@ httpReturn Login(Core::Net::Request& req) {
 	std::cout << "\033[1;34m[*] Password: " << password << "\033[0m\n";
 	std::cout << "\033[1;34m[*] DB password: " << dbPassword << "\033[0m\n";
 #endif
+
 	if (password != dbPassword) {
 		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Incorrect password", std::nullopt);
 	}
@@ -173,7 +174,7 @@ httpReturn GetUser(Core::Net::Request& req) {
 	user["last_name"] = res[0]["last_name"].as<std::string>();
 	user["username"] = res[0]["username"].as<std::string>();
 	user["email"] = res[0]["email"].as<std::string>();
-	user["egn"] = res[0]["egn"].as<std::optional<std::string>>().value_or("");
+	//user["egn"] = res[0]["egn"].as<std::optional<std::string>>().value_or("");
 	user["role"] = res[0]["role"].as<std::string>();
 
 	return std::make_tuple(Core::Net::ResponseType::JSON, user.dump(), std::nullopt);

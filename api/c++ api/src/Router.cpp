@@ -43,7 +43,7 @@ void Core::Net::Router::Handle(Request& req) {
 		}
 	}
 	catch (std::exception& e) {
-		responses = { std::make_tuple(ResponseType::INTERNAL_ERROR, e.what(), std::optional<std::vector<std::string>>(false)) };
+		responses = { std::make_tuple(ResponseType::INTERNAL_ERROR, e.what(), std::optional<std::vector<std::string>>(false))};
 	}
 
 	//std::cout << "\033[1;34m[*] Responses size: " << responses.size() << "\033[0m\n";
@@ -75,6 +75,7 @@ void Core::Net::Router::AddRoute(std::string method, std::string path, std::func
 void Core::Net::Router::Respond(Request& req, returnType response) {
 	ResponseType type = std::get<0>(response);
 	std::string data = std::get<1>(response);
+	json j;
 
 	std::string header = "HTTP/1.1 ";
 
@@ -108,35 +109,43 @@ void Core::Net::Router::Respond(Request& req, returnType response) {
 		header += "Access-Control-Allow-Origin: https://www.google.com\r\n";
 		header += "Access-Control-Allow-Methods: GET, POST, PUT, DELETE\r\n";
 		header += "Access-Control-Allow-Headers: X-PINGOTHER, Content-Type\r\n";
-		header += "Content-Type: text/plain\r\n";
+		header += "Content-Type: application/json\r\n";
+		j["data"] = data;
 	}
 	else if (type == ResponseType::NOT_FOUND) {
 		header += "404 Not Found\r\n";
 		header += "Access-Control-Allow-Origin: https://www.google.com\r\n";
 		header += "Access-Control-Allow-Methods: GET, POST, PUT, DELETE\r\n";
 		header += "Access-Control-Allow-Headers: X-PINGOTHER, Content-Type\r\n";
-		header += "Content-Type: text/plain\r\n";
+		header += "Content-Type: application/json\r\n";
+		j["data"] = data;
 	}
 	else if (type == ResponseType::INTERNAL_ERROR) {
 		header += "500 Internal Server Error\r\n";
 		header += "Access-Control-Allow-Origin: https://www.google.com\r\n";
 		header += "Access-Control-Allow-Methods: GET, POST, PUT, DELETE\r\n";
 		header += "Access-Control-Allow-Headers: X-PINGOTHER, Content-Type\r\n";
-		header += "Content-Type: text/plain\r\n";
+		header += "Content-Type: application/json\r\n";
+
+		j["data"] = data;
 	}
 	else if (type == ResponseType::NOT_IMPLEMENTED) {
 		header += "501 Not Implemented\r\n";
 		header += "Access-Control-Allow-Origin: https://www.google.com\r\n";
 		header += "Access-Control-Allow-Methods: GET, POST, PUT, DELETE\r\n";
 		header += "Access-Control-Allow-Headers: X-PINGOTHER, Content-Type\r\n";
-		header += "Content-Type: text/plain\r\n";
+		header += "Content-Type: application/json\r\n";
+
+		j["data"] = data;
 	}
 	else if (type == ResponseType::NOT_AUTHORIZED) {
 		header += "401 Unauthorized\r\n";
 		header += "Access-Control-Allow-Origin: https://www.google.com\r\n";
 		header += "Access-Control-Allow-Methods: GET, POST, PUT, DELETE\r\n";
 		header += "Access-Control-Allow-Headers: X-PINGOTHER, Content-Type\r\n";
-		header += "Content-Type: text/plain\r\n";
+		header += "Content-Type: application/json\r\n";
+
+		j["data"] = data;
 	}
 	else if (type == ResponseType::REDIRECT) {
 		header += "302 Found\r\n";
@@ -150,12 +159,22 @@ void Core::Net::Router::Respond(Request& req, returnType response) {
 		header += "Access-Control-Allow-Origin: https://www.google.com\r\n";
 		header += "Access-Control-Allow-Methods: GET, POST, PUT, DELETE\r\n";
 		header += "Access-Control-Allow-Headers: X-PINGOTHER, Content-Type\r\n";
-		header += "Content-Type: text/plain\r\n";
+		header += "Content-Type: application/json\r\n";
+
+		j["data"] = data;
 	}
 	
 	header += "Connection: Keep-Alive\r\n";
-	header += "Content-Length: " + std::to_string(data.length()) + "\r\n\r\n";
-	header += data;
+
+	if (j["data"].is_null()) {
+		header += "Content-Length: " + std::to_string(data.length()) + "\r\n\r\n";
+		header += data;
+	}
+	else {
+		header += "Content-Length: " + std::to_string(j.dump().length()) + "\r\n\r\n";
+		header += j.dump();
+
+	}
 
 	//std::cout << header << '\n';
 

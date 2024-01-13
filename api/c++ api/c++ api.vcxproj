@@ -153,7 +153,6 @@
     <ClCompile Include="src\backend\Users.cpp" />
     <ClCompile Include="src\backend\Wills.cpp" />
     <ClCompile Include="src\Core.cpp" />
-    <ClCompile Include="src\Database.cpp" />
     <ClCompile Include="src\Request.cpp" />
     <ClCompile Include="src\Router.cpp" />
     <ClCompile Include="src\TcpListener.cpp" />
