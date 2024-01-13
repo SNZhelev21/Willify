@@ -11,6 +11,9 @@
 #include "Event.hpp"
 #include "Request.hpp"
 #include "ResponseType.hpp"
+#include "nlohmann/json.hpp"
+
+using json = nlohmann::json;
 
 namespace Core {
 	namespace Net {
