@@ -53,7 +53,7 @@ function Signin() {
                     <button className="m-3 text-black transition-all duration-150 rounded hover:bg-slate-300 bg-slate-50" id="sumbit" type="submit" onClick={submit}>
                         Вход
                     </button>
-                    <Link to="/signup" className="text-sm text-gray-300 transition-all duration-150 hover:text-gray-400 text-center">
+                    <Link to="/register" className="text-sm text-gray-300 transition-all duration-150 hover:text-gray-400 text-center">
                         Регистриране
                     </Link>
                 </Form>
