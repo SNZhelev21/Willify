@@ -1,4 +1,4 @@
-import {Form, Link} from "react-router-dom";
+import {Form, Link, NavLink} from "react-router-dom";
 import storageService from "../services/storage-service";
 import userAuthApi from "../api/user-auth-api";
 import { UserIM } from "../models";
@@ -49,63 +49,66 @@ function Signup()
   
   return (
     <>
-        <div className="grid w-full p-10 bg-gray-500 rounded-lg shadow">
-            <h1 className="mb-5 text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white text-center">
-                Регистрация
-            </h1>
-            <Form className="grid">
-                <input
-                    className="m-3 font-bold rounded text-slate-500"
+        <div className="grid">
+            <NavLink to="/#" className="justify-self-center flex items-center">
+                <img src="/src/assets/Willify.svg" className="w-32 h-20"></img>
+            </NavLink>
+
+            <div className="grid w-full p-10 bg-gray-500 rounded-lg shadow">
+                <Form className="grid">
+                    <input
+                        className="m-3 font-bold rounded text-slate-500"
+                        type="text"
+                        onChange={onChangeFirstName}
+                        placeholder="First name"
+                        required
+                    >
+                    </input>
+
+                    <input className="m-3 font-bold rounded text-slate-500"
+                        type="text"
+                        onChange={onChangeLastName}
+                        placeholder="Last name"
+                        required
+                    >
+                    </input>
+
+                    <input className="m-3 font-bold rounded text-slate-500"
                     type="text"
-                    onChange={onChangeFirstName}
-                    placeholder="Име"
+                    onChange={onChangeUsername}
+                    placeholder="Username"
                     required
-                >
-                </input>
+                    >
+                    </input>
 
-                <input className="m-3 font-bold rounded text-slate-500"
-                    type="text"
-                    onChange={onChangeLastName}
-                    placeholder="Фамилия"
-                    required
-                >
-                </input>
+                    <input
+                        className="m-3 font-bold rounded text-slate-500"
+                        type="email"
+                        onChange={onChangeEmail}
+                        placeholder="Email"
+                        required
+                    >
+                    </input>
 
-                <input className="m-3 font-bold rounded text-slate-500"
-                type="text"
-                onChange={onChangeUsername}
-                placeholder="Потребителско име"
-                required
-                >
-                </input>
+                    <input
+                        className="m-3 font-bold rounded text-slate-500"
+                        type="password"
+                        onChange={onChangePassword}
+                        placeholder="Password"
+                        required
+                    >
+                    </input>
+                    
+                    <button id="submit" type="submit" onClick={submit} className="m-3 text-black transition-all duration-150 rounded hover:bg-slate-300 bg-slate-50 ">
+                        Sign up
+                    </button>
 
-                <input
-                    className="m-3 font-bold rounded text-slate-500"
-                    type="email"
-                    onChange={onChangeEmail}
-                    placeholder="Имейл"
-                    required
-                >
-                </input>
-
-                <input
-                    className="m-3 font-bold rounded text-slate-500"
-                    type="password"
-                    onChange={onChangePassword}
-                    placeholder="Парола"
-                    required
-                >
-                </input>
-                
-                <button id="submit" type="submit" onClick={submit} className="m-3 text-black transition-all duration-150 rounded hover:bg-slate-300 bg-slate-50 ">
-                    Регистрация
-                </button>
-
-                <Link to='/login' className="text-sm text-gray-300 hover:text-gray-400 text-center">
-                    Вече имате акаунт? Вход
-                </Link>
-            </Form>
-        </div> 
+                    <Link to='/login' className="text-sm text-gray-300 hover:text-gray-400 text-center">
+                        Already have an account? Login
+                    </Link>
+                </Form>
+            </div> 
+        </div>
     </>
   );
 }
