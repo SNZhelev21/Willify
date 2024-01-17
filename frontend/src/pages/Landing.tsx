@@ -15,7 +15,7 @@ function Landing()
     return(
         <>
             <div className="backdrop-blur-sm bg-white/50 sticky top-0 left-0 z-50 w-screen">
-                <nav className="sm:px-4 w-[95%] bg-transparent max-w-[1200px] mx-auto p-0 pb-10 gap-x-4 grid grid-cols-2 place-items-center">
+                <nav className="sm:px-4 w-[95%] bg-transparent max-w-[1200px] mx-auto pb-5 pt-5 gap-x-4 grid grid-cols-2 place-items-center">
                     <div className="flex justify-self-start gap-4 w-fit h-fit">
                         <Link to="/" className="flex items-center gap-2">
                             <img src="/src/assets/Logo.svg" className="w-16 h-16"></img>
@@ -29,7 +29,7 @@ function Landing()
                 </nav>
             </div>
 
-            <div className="relative left-[19%] grid grid-cols-2 place-items-center w-[62%] gap-x-4">
+            <div className="relative left-[19%] grid grid-cols-2 place-items-center w-[62%] gap-20 mb-20">
                 <div className="grid justify-self-end">
                     <div className="justify-self-end">
                         <h2 className="text-6xl text-black">Welcome to </h2>
@@ -40,8 +40,17 @@ function Landing()
                         </p>
                     </div>
                 </div>
-                <div className="justify-self-end">
-                    <img src="/src/assets/blob.svg"></img>
+                <div className="justify-self-center">
+                    <img src="/src/assets/blob.svg" className="w-[50rem] h-[40rem]"></img>
+                </div>
+            </div>
+
+            <div className="relative left-0 bottom-0 bg-black w-screen h-fit">
+                <div className="mb-10 h-1"></div>
+                <div className="relative left-[19%] w-[62%] grid p-2">
+                    <img src="/src/assets/Willify.svg" className="justify-self-start"></img>
+
+                    <p className="text-white text-xl font-normal justify-self-center">© 2024 All rights reserved. Created by Willify</p>
                 </div>
             </div>
         </>
