@@ -1,4 +1,4 @@
-import {Form, Link} from "react-router-dom";
+import {Form, Link, NavLink} from "react-router-dom";
 import storageService from "../services/storage-service";
 import userAuthApi from "../api/user-auth-api";
 import { UserLM } from "../models";
@@ -33,30 +33,33 @@ function Signin() {
     
     return (
         <>
-            <div className="grid w-full p-10 bg-gray-500 rounded-lg shadow">
-                <h1 className="mb-5 text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white text-center">
-                    Вход
-                </h1>
-                <Form className="grid">
-                    <input 
-                        className="m-3 font-bold rounded text-slate-500"
-                        type="email" 
-                        placeholder="Потребителско име" 
-                        onChange={onChangeUsername} 
-                    />
-                    <input 
-                        className="m-3 font-bold rounded text-slate-500"
-                        type="password" 
-                        placeholder="Парола" 
-                        onChange={onChangePassword} 
-                    />
-                    <button className="m-3 text-black transition-all duration-150 rounded hover:bg-slate-300 bg-slate-50" id="sumbit" type="submit" onClick={submit}>
-                        Вход
-                    </button>
-                    <Link to="/register" className="text-sm text-gray-300 transition-all duration-150 hover:text-gray-400 text-center">
-                        Регистриране
-                    </Link>
-                </Form>
+            <div className="grid">
+            <NavLink to="/#" className="justify-self-center flex items-center">
+                <img src="/src/assets/Willify.svg" className="w-32 h-20"></img>
+            </NavLink>
+
+                <div className="grid w-full p-10 bg-gray-500 rounded-lg shadow">
+                    <Form className="grid">
+                        <input 
+                            className="m-3 font-bold rounded text-slate-500"
+                            type="email" 
+                            placeholder="Username" 
+                            onChange={onChangeUsername} 
+                        />
+                        <input 
+                            className="m-3 font-bold rounded text-slate-500"
+                            type="password" 
+                            placeholder="Password" 
+                            onChange={onChangePassword} 
+                        />
+                        <button className="m-3 text-black transition-all duration-150 rounded hover:bg-slate-300 bg-slate-50" id="sumbit" type="submit" onClick={submit}>
+                            Login
+                        </button>
+                        <Link to="/register" className="text-sm text-gray-300 transition-all duration-150 hover:text-gray-400 text-center">
+                            Don't have an account? Sign up
+                        </Link>
+                    </Form>
+                </div>
             </div>
         </>
     );
