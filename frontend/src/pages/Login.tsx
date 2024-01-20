@@ -22,9 +22,10 @@ function Signin() {
     };
     
     async function submit() {
-        console.log(`Username: ${userdata.username} Password: ${userdata.password}`);
         await userAuthApi.apiUserAuthLoginPost(userdata).then(function (response) {
-            storageService.saveAccessToken((response as any).data.accessToken);
+
+            console.log(response.data.token)
+            storageService.saveAccessToken((response as any).data.token);
             navigate("/home")
         }).catch(function (error) {
             alert("Error: " + error);
@@ -33,29 +34,33 @@ function Signin() {
     
     return (
         <>
-            <div className="grid">
-            <NavLink to="/#" className="justify-self-center flex items-center">
-                <img src="/src/assets/Willify.svg" className="w-32 h-20"></img>
-            </NavLink>
+            <div className="grid grid-cols-2 place-items-center w-screen h-screen">
 
-                <div className="grid w-full p-10 bg-gray-500 rounded-lg shadow">
+                <div className="justify-self-center">
+                    <img src="/src/assets/blob.svg" className="w-[50rem] h-[40rem]"></img>
+                </div>
+
+                <div className="grid w-[50%] max-w-[550px] p-10 rounded-lg">
+                    <NavLink to="/#" className="justify-self-center flex items-center">
+                        <img src="/src/assets/Willify.svg" className="w-32 h-20"></img>
+                    </NavLink>
                     <Form className="grid">
                         <input 
-                            className="m-3 font-bold rounded text-slate-500"
+                            className="m-3 font-bold rounded text-slate-500 bg-[#F4F4F4]"
                             type="email" 
                             placeholder="Username" 
-                            onChange={onChangeUsername} 
+                            onChange={onChangeUsername}
                         />
                         <input 
-                            className="m-3 font-bold rounded text-slate-500"
+                            className="m-3 font-bold rounded text-slate-500 bg-[#F4F4F4]"
                             type="password" 
                             placeholder="Password" 
                             onChange={onChangePassword} 
                         />
-                        <button className="m-3 text-black transition-all duration-150 rounded hover:bg-slate-300 bg-slate-50" id="sumbit" type="submit" onClick={submit}>
+                        <button className="m-3 text-primary transition-all duration-150 border border-primary rounded hover:bg-gray-100" id="sumbit" type="submit" onClick={submit}>
                             Login
                         </button>
-                        <Link to="/register" className="text-sm text-gray-300 transition-all duration-150 hover:text-gray-400 text-center">
+                        <Link to="/register" className="text-sm text-primary transition-all duration-150 hover:text-[#d61115] text-center">
                             Don't have an account? Sign up
                         </Link>
                     </Form>
