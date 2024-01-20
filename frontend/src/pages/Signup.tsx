@@ -49,66 +49,70 @@ function Signup()
   
   return (
     <>
-        <div className="grid">
+      <div className="grid grid-cols-2 place-items-center w-screen h-screen">
+        <div className="justify-self-center">
+            <img src="/src/assets/blob.svg" className="w-[50rem] h-[40rem]"></img>
+        </div>
+
+        <div className="grid w-[50%] max-w-[550px] p-10 rounded-lg">
             <NavLink to="/#" className="justify-self-center flex items-center">
                 <img src="/src/assets/Willify.svg" className="w-32 h-20"></img>
             </NavLink>
 
-            <div className="grid w-full p-10 bg-gray-500 rounded-lg shadow">
-                <Form className="grid">
-                    <input
-                        className="m-3 font-bold rounded text-slate-500"
-                        type="text"
-                        onChange={onChangeFirstName}
-                        placeholder="First name"
-                        required
-                    >
-                    </input>
-
-                    <input className="m-3 font-bold rounded text-slate-500"
-                        type="text"
-                        onChange={onChangeLastName}
-                        placeholder="Last name"
-                        required
-                    >
-                    </input>
-
-                    <input className="m-3 font-bold rounded text-slate-500"
+            <Form className="grid">
+                <input
+                    className="m-3 font-bold rounded text-slate-500 bg-[#F4F4F4]"
                     type="text"
-                    onChange={onChangeUsername}
-                    placeholder="Username"
+                    onChange={onChangeFirstName}
+                    placeholder="First name"
                     required
-                    >
-                    </input>
+                >
+                </input>
 
-                    <input
-                        className="m-3 font-bold rounded text-slate-500"
-                        type="email"
-                        onChange={onChangeEmail}
-                        placeholder="Email"
-                        required
-                    >
-                    </input>
+                <input className="m-3 font-bold rounded text-slate-500 bg-[#F4F4F4]"
+                    type="text"
+                    onChange={onChangeLastName}
+                    placeholder="Last name"
+                    required
+                >
+                </input>
 
-                    <input
-                        className="m-3 font-bold rounded text-slate-500"
-                        type="password"
-                        onChange={onChangePassword}
-                        placeholder="Password"
-                        required
-                    >
-                    </input>
-                    
-                    <button id="submit" type="submit" onClick={submit} className="m-3 text-black transition-all duration-150 rounded hover:bg-slate-300 bg-slate-50 ">
-                        Sign up
-                    </button>
+                <input className="m-3 font-bold rounded text-slate-500 bg-[#F4F4F4]"
+                type="text"
+                onChange={onChangeUsername}
+                placeholder="Username"
+                required
+                >
+                </input>
 
-                    <Link to='/login' className="text-sm text-gray-300 hover:text-gray-400 text-center">
-                        Already have an account? Login
-                    </Link>
-                </Form>
-            </div> 
+                <input
+                    className="m-3 font-bold rounded text-slate-500 bg-[#F4F4F4]"
+                    type="email"
+                    onChange={onChangeEmail}
+                    placeholder="Email"
+                    required
+                >
+                </input>
+
+                <input
+                    className="m-3 font-bold rounded text-slate-500 bg-[#F4F4F4]"
+                    type="password"
+                    onChange={onChangePassword}
+                    placeholder="Password"
+                    required
+                >
+                </input>
+                
+                <button id="submit" type="submit" onClick={submit} className="m-3 text-primary transition-all duration-150 border border-primary rounded hover:bg-gray-100">
+                    Sign up
+                </button>
+
+                <Link to='/login' className="text-sm text-primary transition-all duration-150 hover:text-[#d61115] text-center">
+                    Already have an account? Login
+                </Link>
+            </Form>
         </div>
+      </div>
     </>
   );
 }
