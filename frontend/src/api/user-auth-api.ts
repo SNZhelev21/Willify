@@ -15,7 +15,8 @@ class UserAuthApi {
             headers: {
               'Content-Type': 'application/json'
             }
-          });
+          }
+        );
     }
     
     public async apiUserAuthRegisterPost(userIM: UserIM, config?: AxiosRequestConfig): Promise<AxiosResponse<void, any>> {

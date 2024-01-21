@@ -23,8 +23,6 @@ function Signin() {
     
     async function submit() {
         await userAuthApi.apiUserAuthLoginPost(userdata).then(function (response) {
-
-            console.log(response.data.token)
             storageService.saveAccessToken((response as any).data.token);
             navigate("/home")
         }).catch(function (error) {
