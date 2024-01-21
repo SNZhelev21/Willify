@@ -88,9 +88,9 @@ void Core::Net::Router::Respond(Request& req, returnType response) {
 		}
 
 		// CORS
-		header += "Access-Control-Allow-Origin: https://www.google.com\r\n";
+		header += "Access-Control-Allow-Origin: *\r\n";
 		header += "Access-Control-Allow-Methods: GET, POST, PUT, DELETE\r\n";
-		header += "Access-Control-Allow-Headers: X-PINGOTHER, Content-Type\r\n";
+		header += "Access-Control-Allow-Headers: X-PINGOTHER, Content-Type, Authorization\r\n";
 
 		header += "Content-Type: ";
 
@@ -106,59 +106,59 @@ void Core::Net::Router::Respond(Request& req, returnType response) {
 	}
 	else if (type == ResponseType::BAD_REQUEST) {
 		header += "400 Bad Request\r\n";
-		header += "Access-Control-Allow-Origin: https://www.google.com\r\n";
+		header += "Access-Control-Allow-Origin: *\r\n";
 		header += "Access-Control-Allow-Methods: GET, POST, PUT, DELETE\r\n";
-		header += "Access-Control-Allow-Headers: X-PINGOTHER, Content-Type\r\n";
+		header += "Access-Control-Allow-Headers: X-PINGOTHER, Content-Type, Authorization\r\n";
 		header += "Content-Type: application/json\r\n";
 		j["data"] = data;
 	}
 	else if (type == ResponseType::NOT_FOUND) {
 		header += "404 Not Found\r\n";
-		header += "Access-Control-Allow-Origin: https://www.google.com\r\n";
+		header += "Access-Control-Allow-Origin: *\r\n";
 		header += "Access-Control-Allow-Methods: GET, POST, PUT, DELETE\r\n";
-		header += "Access-Control-Allow-Headers: X-PINGOTHER, Content-Type\r\n";
+		header += "Access-Control-Allow-Headers: X-PINGOTHER, Content-Type, Authorization\r\n";
 		header += "Content-Type: application/json\r\n";
 		j["data"] = data;
 	}
 	else if (type == ResponseType::INTERNAL_ERROR) {
 		header += "500 Internal Server Error\r\n";
-		header += "Access-Control-Allow-Origin: https://www.google.com\r\n";
+		header += "Access-Control-Allow-Origin: *\r\n";
 		header += "Access-Control-Allow-Methods: GET, POST, PUT, DELETE\r\n";
-		header += "Access-Control-Allow-Headers: X-PINGOTHER, Content-Type\r\n";
+		header += "Access-Control-Allow-Headers: X-PINGOTHER, Content-Type, Authorization\r\n";
 		header += "Content-Type: application/json\r\n";
 
 		j["data"] = data;
 	}
 	else if (type == ResponseType::NOT_IMPLEMENTED) {
 		header += "501 Not Implemented\r\n";
-		header += "Access-Control-Allow-Origin: https://www.google.com\r\n";
+		header += "Access-Control-Allow-Origin: *\r\n";
 		header += "Access-Control-Allow-Methods: GET, POST, PUT, DELETE\r\n";
-		header += "Access-Control-Allow-Headers: X-PINGOTHER, Content-Type\r\n";
+		header += "Access-Control-Allow-Headers: X-PINGOTHER, Content-Type, Authorization\r\n";
 		header += "Content-Type: application/json\r\n";
 
 		j["data"] = data;
 	}
 	else if (type == ResponseType::NOT_AUTHORIZED) {
 		header += "401 Unauthorized\r\n";
-		header += "Access-Control-Allow-Origin: https://www.google.com\r\n";
+		header += "Access-Control-Allow-Origin: *\r\n";
 		header += "Access-Control-Allow-Methods: GET, POST, PUT, DELETE\r\n";
-		header += "Access-Control-Allow-Headers: X-PINGOTHER, Content-Type\r\n";
+		header += "Access-Control-Allow-Headers: X-PINGOTHER, Content-Type, Authorization\r\n";
 		header += "Content-Type: application/json\r\n";
 
 		j["data"] = data;
 	}
 	else if (type == ResponseType::REDIRECT) {
 		header += "302 Found\r\n";
-		header += "Access-Control-Allow-Origin: https://www.google.com\r\n";
+		header += "Access-Control-Allow-Origin: *\r\n";
 		header += "Access-Control-Allow-Methods: GET, POST, PUT, DELETE\r\n";
-		header += "Access-Control-Allow-Headers: X-PINGOTHER, Content-Type\r\n";
+		header += "Access-Control-Allow-Headers: X-PINGOTHER, Content-Type, Authorization\r\n";
 		header += "Location: " + data + "\r\n";
 	}
 	else if (type == ResponseType::ALREADY_EXISTS) {
 		header += "409 Conflict\r\n";
-		header += "Access-Control-Allow-Origin: https://www.google.com\r\n";
+		header += "Access-Control-Allow-Origin: *\r\n";
 		header += "Access-Control-Allow-Methods: GET, POST, PUT, DELETE\r\n";
-		header += "Access-Control-Allow-Headers: X-PINGOTHER, Content-Type\r\n";
+		header += "Access-Control-Allow-Headers: X-PINGOTHER, Content-Type, Authorization\r\n";
 		header += "Content-Type: application/json\r\n";
 
 		j["data"] = data;

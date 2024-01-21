@@ -18,9 +18,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\TcpListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -42,11 +39,11 @@
     <ClCompile Include="src\backend\Wills.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\backend\Token.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\Core.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\Event.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -87,6 +84,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\backend\Wills.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\backend\Token.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

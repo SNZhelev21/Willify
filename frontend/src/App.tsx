@@ -9,6 +9,7 @@ import Signup from './pages/Signup.tsx';
 import './styles.css';
 import React from "react";
 import Landing from './pages/Landing.tsx';
+import Home from './pages/Home.tsx';
 
 const App = createBrowserRouter(
   createRoutesFromElements(
@@ -17,6 +18,7 @@ const App = createBrowserRouter(
         <Route index element={<Landing />} />s
         <Route path="login" element={<Signin />} />
         <Route path="register" element={<Signup />} />
+        <Route path="home" element={<Home />} />
       </Route>
     </>
   )

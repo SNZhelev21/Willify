@@ -150,9 +150,9 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="src\backend\Hash.cpp" />
     <ClCompile Include="src\backend\Stocks.cpp" />
+    <ClCompile Include="src\backend\Token.cpp" />
     <ClCompile Include="src\backend\Users.cpp" />
     <ClCompile Include="src\backend\Wills.cpp" />
-    <ClCompile Include="src\Core.cpp" />
     <ClCompile Include="src\Request.cpp" />
     <ClCompile Include="src\Router.cpp" />
     <ClCompile Include="src\TcpListener.cpp" />
@@ -161,9 +161,9 @@
     <ClInclude Include="include\backend\Hash.hpp" />
     <ClInclude Include="include\backend\Secrets.hpp" />
     <ClInclude Include="include\backend\Stocks.hpp" />
+    <ClInclude Include="include\backend\Token.hpp" />
     <ClInclude Include="include\backend\Users.hpp" />
     <ClInclude Include="include\backend\Wills.hpp" />
-    <ClInclude Include="include\Core.hpp" />
     <ClInclude Include="include\ctre.hpp" />
     <ClInclude Include="include\Database.hpp" />
     <ClInclude Include="include\Debug.hpp" />
