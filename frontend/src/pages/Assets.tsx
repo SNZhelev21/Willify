@@ -10,21 +10,12 @@ import React, {useState, useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 import Modal from 'react-modal';
 
-const customStyles = {
-    content: {
-      top: '50%',
-      left: '50%',
-      right: 'auto',
-      bottom: 'auto',
-      marginRight: '-50%',
-      transform: 'translate(-50%, -50%)',
-    },
-};
-
 Modal.setAppElement('body');
 
 let assetData: AssetIM = {
-    name: ""
+    name: "",
+    type: "",
+    quantity: 0
 };
 
 function Assets() {
@@ -70,16 +61,24 @@ function Assets() {
         }
 
         assetsApi.apiAssetsDelete(Number((assets as AssetVM[])[arrayIndex].id)).catch(function(error) {
-            console.log(error)
+            console.log(error);
         });
         
-        const newAssets = [...assets]
-        newAssets.splice(arrayIndex, 1)
+        const newAssets = [...assets];
+        newAssets.splice(arrayIndex, 1);
         setAssets(newAssets);
-    }
+    };
 
     function onChangeName(e: React.FormEvent<HTMLInputElement>): void {
         assetData.name = e.currentTarget.value;
+    };
+
+    function onChangeType(e: React.ChangeEvent<HTMLSelectElement>): void {
+        assetData.type = e.currentTarget.value;
+    };
+
+    function onChangeQuantity(e: React.FormEvent<HTMLInputElement>): void {
+        assetData.quantity = Number(e.currentTarget.value);
     };
     
     return (
@@ -93,8 +92,24 @@ function Assets() {
                         placeholder="Name" 
                         onChange={onChangeName}
                     />
-                    <button type="submit" className="m-0 text-[#4ef542] transition-all duration-150 border-2 border-[#4ef542] rounded hover:bg-gray-100" id="sumbit" type="submit" onClick={() => {
-                        assetsApi.apiAssetsPost(assetData.name).then(function(response) {
+
+                    <input 
+                        className="m-0 font-bold rounded text-slate-500 bg-[#F4F4F4]"
+                        type="text"
+                        placeholder="Quantity"
+                        onChange={onChangeQuantity}
+                    />
+                    
+                    <select 
+                        className="m-0 font-bold rounded text-slate-500 bg-[#F4F4F4]"
+                        onChange={onChangeType}
+                    >
+                        <option value="digital">Digital</option>
+                        <option value="physical">Physical</option>
+                    </select>
+
+                    <button className="m-0 text-[#4ef542] transition-all duration-150 border-2 border-[#4ef542] rounded hover:bg-gray-100" id="sumbit" type="submit" onClick={() => {
+                        assetsApi.apiAssetsPost(assetData.name, assetData.type, assetData.quantity).then(function(response) {
                             console.log(response);
                             const newAssets = [...(assets as AssetVM[])]
                             newAssets.push(response.data as unknown as AssetVM);
