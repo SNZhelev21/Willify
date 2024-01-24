@@ -132,7 +132,10 @@ httpReturn Login(Core::Net::Request& req) {
 
 	std::string signedToken = jwtToken.sign(jwt::algorithm::rs512{ "", rsaSecret, "", "" });
 
-	return std::make_tuple(Core::Net::ResponseType::OK, signedToken, std::nullopt);
+	json token;
+	token["token"] = signedToken;
+
+	return std::make_tuple(Core::Net::ResponseType::JSON, token.dump(), std::nullopt);
 }
 
 httpReturn GetUser(Core::Net::Request& req) {
@@ -169,12 +172,12 @@ httpReturn GetUser(Core::Net::Request& req) {
 	}
 
 	json user;
+
 	user["id"] = res[0]["id"].as<int>();
 	user["first_name"] = res[0]["first_name"].as<std::string>();
 	user["last_name"] = res[0]["last_name"].as<std::string>();
 	user["username"] = res[0]["username"].as<std::string>();
 	user["email"] = res[0]["email"].as<std::string>();
-	//user["egn"] = res[0]["egn"].as<std::optional<std::string>>().value_or("");
 	user["role"] = res[0]["role"].as<std::string>();
 
 	return std::make_tuple(Core::Net::ResponseType::JSON, user.dump(), std::nullopt);

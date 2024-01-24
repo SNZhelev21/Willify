@@ -1,33 +1,19 @@
 import {Form, Link, NavLink, Outlet} from "react-router-dom";
 import storageService from "../services/storage-service";
-import userAuthApi from "../api/user-auth-api";
-import { UserLM } from "../models";
-import React from "react";
+import userApi from "../api/user-api";
+import tokenApi from "../api/token-api";
+import {UserVM} from "../models/user-vm";
+import React, {useState, useEffect} from "react";
 import {useNavigate} from "react-router-dom"
 
 function Home() {
-<<<<<<< Updated upstream
-    return (
-        <>
-            <div className="w-screen h-screen">
-                <nav className="w-screen h-[80px] bg-neutral-700 justify-center items-center gap-[200px] inline-flex">
-                    <NavLink to="/stocks" className="w-fit text-center text-white aria-[current=page]:text-primary hover:text-primary transition ease-in-out duration-100">АКТИВИ</NavLink>
-                    <NavLink to="/home" className="w-fit text-center text-white aria-[current=page]:text-primary hover:text-primary transition ease-in-out duration-100">НАЧАЛО</NavLink>
-                    <NavLink to="/wills" className="w-fit text-center text-white aria-[current=page]:text-primary hover:text-primary transition ease-in-out duration-100">ЗАВЕЩАНИЯ</NavLink>
-                </nav>
-=======
     const [user, setUser] = useState<UserVM | null>(null);
     let navigate = useNavigate();
 
     useEffect(() => {
+        const userInfo: UserVM | null = storageService.retrieveUserInfo();
         (async () => {
-            const userInfo: UserVM | null = storageService.retrieveUserInfo();
-            tokenApi.apiVerifyToken().then(function(tokenResponse) {
-                if (tokenResponse.status !== 200) {
-                    navigate("/");
-                    return;
-                }
-                
+            tokenApi.apiVerifyToken().then(function() {
                 if (userInfo) {
                     setUser(userInfo);
                     return;
@@ -55,7 +41,6 @@ function Home() {
                 </div>
 
                 <div className="w-screen h-[1900px] bg-[#ECECEC]"></div>
->>>>>>> Stashed changes
             </div>
 
             <Outlet/>

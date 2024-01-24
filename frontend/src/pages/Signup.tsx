@@ -39,9 +39,11 @@ function Signup()
 
   async function submit() {
     // api call for register
-    userAuthApi.apiUserAuthRegisterPost(userdata).then(function (response) {
-        storageService.saveAccessToken((response as any).data.accessToken);
-        navigate("/home")
+    await userAuthApi.apiUserAuthRegisterPost(userdata).then(async function () {
+        await userAuthApi.apiUserAuthLoginPost({username: userdata.username, password:userdata.password}).then(function (response) {
+          storageService.saveAccessToken((response as any).data.token);
+          navigate("/home")
+        })
     }).catch(function (error) {
         alert("Error: " + error);
     });

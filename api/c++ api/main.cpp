@@ -10,6 +10,7 @@
 #include "include/backend/Users.hpp"
 #include "include/backend/Stocks.hpp"
 #include "include/backend/Wills.hpp"
+#include "include/backend/Token.hpp"
 
 int main()
 {
@@ -58,13 +59,14 @@ int main()
 		router.AddRoute("PUT", "/admin/will", AdminUpdateWill);
 		router.AddRoute("DELETE", "/admin/will", AdminDeleteWill);
 		router.AddRoute("POST", "/admin/will/do", DoWill);
+		router.AddRoute("POST", "/token", CheckAccessToken);
 
-		char* szHostName = new char[255];
+		char* szHostName = new char;
 		gethostname(szHostName, 255);
 		hostent* host_entry = gethostbyname(szHostName);
 		char* szLocalIP = inet_ntoa(*(struct in_addr*)*host_entry->h_addr_list);
 
-		std::cout << "\033[1;34m[*] Addr: " << szLocalIP << "\033[0m\n";
+		std::cout << "\033[1;34mAddr: " << szLocalIP << "\033[0m\n";
 		server.Listen(szLocalIP, 45098, 250);
 	}
 	catch (std::runtime_error& e) {
