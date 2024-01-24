@@ -40,11 +40,13 @@ class AssetsApi {
         })
     }
 
-    public async apiAssetsPost(name: string): Promise<AxiosResponse<void, any>> {
+    public async apiAssetsPost(name: string, type: string, quantity: Number): Promise<AxiosResponse<void, any>> {
         const url = 'http://willify.westeurope.cloudapp.azure.com:45098/stock';
 
         return await this.axios.post(url, {
-            name: `${name}`
+            name: `${name}`,
+            type: `${type}`,
+            quantity: quantity
         }, {
             headers: {
                 'Authorization': `Bearer ${storageService.retrieveAccessToken()}`
