@@ -217,7 +217,7 @@ httpReturn DeleteUser(Core::Net::Request& req) {
 		return std::make_tuple(Core::Net::ResponseType::NOT_FOUND, "User with id " + id + " not found", std::nullopt);
 	}
 
-	return std::make_tuple(Core::Net::ResponseType::OK, "User deleted", std::nullopt);
+	return std::make_tuple(Core::Net::ResponseType::OK, "", std::nullopt);
 }
 
 httpReturn UpdateUser(Core::Net::Request& req) {
@@ -297,7 +297,7 @@ httpReturn UpdateUser(Core::Net::Request& req) {
 	user["username"] = username;
 	user["email"] = email;
 
-	return std::make_tuple(Core::Net::ResponseType::OK, user.dump(), std::nullopt);
+	return std::make_tuple(Core::Net::ResponseType::JSON, user.dump(), std::nullopt);
 }
 
 httpReturn AdminUpdateUser(Core::Net::Request& req) {
@@ -410,7 +410,7 @@ httpReturn AdminUpdateUser(Core::Net::Request& req) {
 	user["egn"] = egn;
 	user["disabled"] = disabled;
 
-	return std::make_tuple(Core::Net::ResponseType::OK, user.dump(), std::nullopt);
+	return std::make_tuple(Core::Net::ResponseType::JSON, user.dump(), std::nullopt);
 }
 
 httpReturn AdminDeleteUser(Core::Net::Request& req) {
@@ -491,19 +491,11 @@ httpReturn AdminGetUser(Core::Net::Request& req) {
 		return std::make_tuple(Core::Net::ResponseType::NOT_AUTHORIZED, "Only admins can access this route", std::nullopt);
 	}
 
-	json body;
-	try {
-		body = json::parse(req.m_info.body);
-	}
-	catch (json::parse_error& e) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, e.what(), std::nullopt);
-	}
-
-	std::string id = body["user_id"];
+	std::string id = req.m_info.parameters["user_id"];
 
 	//Validate data
 	if (id == "") {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Missing required fields", std::nullopt);
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Missing required parameter", std::nullopt);
 	}
 
 	if (id.find_first_not_of("0123456789") != std::string::npos) {
