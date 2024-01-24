@@ -1,7 +1,7 @@
 # Willify
 <p align="center">
 <img src = "Documents/Images/Team_logo.png"><br><br>
-<img src = "Documents/Images/Logo.png">
+<img src = "Documents/Images/Logo.png" width=150>
 </p>
  
 
