@@ -10,7 +10,6 @@ import './styles.css';
 import React from "react";
 import Landing from './pages/Landing.tsx';
 import Home from './pages/Home.tsx';
-import Home from './pages/Home.tsx';
 import Assets from './pages/Assets.tsx';
 import Wills from './pages/Wills.tsx';
 
