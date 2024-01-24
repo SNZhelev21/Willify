@@ -10,6 +10,9 @@ import './styles.css';
 import React from "react";
 import Landing from './pages/Landing.tsx';
 import Home from './pages/Home.tsx';
+import Home from './pages/Home.tsx';
+import Assets from './pages/Assets.tsx';
+import Wills from './pages/Wills.tsx';
 
 const App = createBrowserRouter(
   createRoutesFromElements(
@@ -19,6 +22,9 @@ const App = createBrowserRouter(
         <Route path="login" element={<Signin />} />
         <Route path="register" element={<Signup />} />
         <Route path="home" element={<Home />} />
+        <Route path="home" element={<Home />} />
+        <Route path="assets" element={<Assets />} />
+        <Route path="wills" element={<Wills />} />
       </Route>
     </>
   )

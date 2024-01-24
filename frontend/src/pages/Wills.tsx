@@ -6,14 +6,19 @@ import {UserVM} from "../models/user-vm";
 import React, {useState, useEffect} from "react";
 import {useNavigate} from "react-router-dom"
 
-function Home() {
+function Assets() {
     const [user, setUser] = useState<UserVM | null>(null);
     let navigate = useNavigate();
 
     useEffect(() => {
         const userInfo: UserVM | null = storageService.retrieveUserInfo();
         (async () => {
-            tokenApi.apiVerifyToken().then(function() {
+            tokenApi.apiVerifyToken().then(function(tokenResponse) {
+                if (tokenResponse.status !== 200) {
+                    navigate("/");
+                    return;
+                }
+                
                 if (userInfo) {
                     setUser(userInfo);
                     return;
@@ -32,6 +37,7 @@ function Home() {
     return (
         <>
             <div className="relative top-0 left-0 w-screen h-[100%] min-h-[100%]">
+
                 <div className="sticky top-0 left-0 bg-white w-screen p-3">
                     <nav className="w-[62%] mx-auto grid grid-cols-3 grid-rows-1 place-items-center">
                         <NavLink to="/assets" className="text-3xl text-black hover:text-primary hover:text-4xl transition-all duration-150 ease-in-out aria-[current=page]:text-4xl aria-[current=page]:text-primary aria-[current=page]:bg-transparent">Assets</NavLink>
@@ -41,11 +47,12 @@ function Home() {
                 </div>
 
                 <div className="w-screen h-[1900px] bg-[#ECECEC]"></div>
+
             </div>
 
             <Outlet/>
         </>
-    ); 
+    );
 }
 
-export default Home;
+export default Assets;
