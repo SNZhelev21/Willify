@@ -46,7 +46,7 @@ void Core::Net::TcpListener::Listen(const char* ip, uint_fast16_t port, uint_fas
 
 	// Listen
 	int backlog = 20;
-	if (listen(this->listener, backlog) != 0) {
+	if (listen(this->listener, maxConnections) != 0) {
 		std::cout << "\033[31m[-] Failed to listen...\033[0m\n";
 		std::cout << "\033[31m[-] Error code: " << WSAGetLastError() << "\033[0m\n";
 

@@ -35,9 +35,10 @@ httpReturn CreateWill(Core::Net::Request& req)
 
 	std::string stockId = body["stock_id"];
 	std::string beneficiaryName = body["beneficiary_name"];
-	std::string beneficiaryEgn = body["beneficiary_egn"];
+	std::string quantity = body["quantity"];
+	std::string beneficiaryRelation = body["beneficiary_relation"];
 
-	if (stockId == "" || beneficiaryName == "" || beneficiaryEgn == "") {
+	if (stockId == "" || beneficiaryName == "" || quantity == "" || beneficiaryRelation == "") {
 		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Missing fields", std::nullopt);
 	}
 
@@ -46,12 +47,16 @@ httpReturn CreateWill(Core::Net::Request& req)
 		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Invalid stock id", std::nullopt);
 	}
 
-	if (beneficiaryEgn.find_first_not_of("0123456789") != std::string::npos || (beneficiaryEgn.length() != 10 && beneficiaryEgn.length() != 9)) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Invalid beneficiary egn", std::nullopt);
-	}
-
 	if (beneficiaryName.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ ") != std::string::npos) {
 		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Invalid beneficiary name", std::nullopt);
+	}
+
+	if (beneficiaryRelation.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") != std::string::npos) {
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Invalid beneficiary relation", std::nullopt);
+	}
+
+	if (quantity.find_first_not_of("0123456789") != std::string::npos) {
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Invalid quantity", std::nullopt);
 	}
 
 	// Check if stock exists
@@ -68,21 +73,31 @@ httpReturn CreateWill(Core::Net::Request& req)
 		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "You do not own this stock", std::nullopt);
 	}
 
-	// Check if beneficiary exists
-	cpr::Response beneficiaryRes = cpr::Get(cpr::Url{ "https://www.migaccount.com/api_checksum?bulstat=" + beneficiaryEgn });
-	json beneficiaryJson = json::parse(beneficiaryRes.text);
+	res = Core::Database::database.Query("SELECT quantity FROM wills WHERE stock_id = " + stockId + ";");
 
-	if (beneficiaryJson["is_egn"] != true && beneficiaryJson["bulstat"].is_null() != false) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Invalid beneficiary egn", std::nullopt);
+	int totalQuantity = 0;
+
+	for (auto row : res) {
+		totalQuantity += row["quantity"].as<int>();
 	}
 
-	res = Core::Database::database.Query("SELECT id FROM wills WHERE stock_id = " + stockId + " and beneficiary_egn = '" + beneficiaryEgn + "';");
+	totalQuantity += std::stoi(quantity);
+
+	res = Core::Database::database.Query("SELECT quantity FROM stocks WHERE id = " + stockId + ";");
+
+	int stockQuantity = res[0]["quantity"].as<int>();
+
+	if (totalQuantity > stockQuantity) {
+		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Not enough asset quantity", std::nullopt);
+	}
+
+	res = Core::Database::database.Query("SELECT id FROM wills WHERE stock_id = " + stockId + " AND beneficiary_name = '" + beneficiaryName + "' AND beneficiary_relation = '" + beneficiaryRelation + "'; ");
 
 	if (res.size() != 0) {
 		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Will already exists", std::nullopt);
 	}
 
-	res = Core::Database::database.Query("INSERT INTO wills (stock_id, beneficiary_name, beneficiary_egn) VALUES (" + stockId + ", '" + beneficiaryName + "', '" + beneficiaryEgn + "') RETURNING id, created_at;");
+	res = Core::Database::database.Query("INSERT INTO wills (stock_id, beneficiary_name, beneficiary_relation, quantity) VALUES (" + stockId + ", '" + beneficiaryName + "', '" + beneficiaryRelation + "', " + quantity + ") RETURNING id, created_at; ");
 
 	if (res.affected_rows() == 0) {
 		return std::make_tuple(Core::Net::ResponseType::INTERNAL_ERROR, "Failed to create will", std::nullopt);
@@ -92,11 +107,12 @@ httpReturn CreateWill(Core::Net::Request& req)
 	willJson["id"] = res[0]["id"].as<std::string>();
 	willJson["stock_id"] = stockId;
 	willJson["beneficiary_name"] = beneficiaryName;
-	willJson["beneficiary_egn"] = beneficiaryEgn;
+	willJson["beneficiary_relation"] = beneficiaryRelation;
 	willJson["done_at"] = "";
 	willJson["created_at"] = res[0]["created_at"].as<std::string>();
+	willJson["quantity"] = quantity;
 
-	return std::make_tuple(Core::Net::ResponseType::OK, willJson.dump(), std::nullopt);
+	return std::make_tuple(Core::Net::ResponseType::JSON, willJson.dump(), std::nullopt);
 }
 
 httpReturn GetWills(Core::Net::Request& req) {
@@ -132,13 +148,16 @@ httpReturn GetWills(Core::Net::Request& req) {
 		willJson["id"] = row["id"].as<std::string>();
 		willJson["stock_id"] = row["stock_id"].as<std::string>();
 		willJson["beneficiary_name"] = row["beneficiary_name"].as<std::string>();
-		willJson["beneficiary_egn"] = row["beneficiary_egn"].as<std::string>();
+		willJson["beneficiary_relation"] = row["beneficiary_relation"].as<std::string>();
 		willJson["done_at"] = row["done_at"].as<std::optional<std::string>>().value_or("");
 		willJson["created_at"] = row["created_at"].as<std::string>();
-
-		willsJson.push_back(willJson);
+		willJson["quantity"] = row["quantity"].as<std::string>();
+		
+		if (row["done_at"].is_null() == false) {
+			willsJson.push_back(willJson);
+		}
 	}
-	return std::make_tuple(Core::Net::ResponseType::OK, willsJson.dump(), std::nullopt);
+	return std::make_tuple(Core::Net::ResponseType::JSON, willsJson.dump(), std::nullopt);
 }
 
 httpReturn GetWill(Core::Net::Request& req) {
@@ -165,15 +184,7 @@ httpReturn GetWill(Core::Net::Request& req) {
 	json tokenJson = decodedToken.get_payload_json();
 	std::string id = tokenJson["id"];
 
-	json body;
-	try {
-		body = json::parse(req.m_info.body);
-	}
-	catch (json::parse_error& e) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, e.what(), std::optional<std::vector<std::string>>(false));
-	}
-
-	std::string willId = body["will_id"];
+	std::string willId = req.m_info.parameters["will_id"];
 
 	if (willId == "") {
 		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Missing fields", std::optional<std::vector<std::string>>(false));
@@ -203,11 +214,12 @@ httpReturn GetWill(Core::Net::Request& req) {
 	json willJson;
 	willJson["stock_id"] = res[0]["stock_id"].as<std::string>();
 	willJson["beneficiary_name"] = res[0]["beneficiary_name"].as<std::string>();
-	willJson["beneficiary_egn"] = res[0]["beneficiary_egn"].as<std::string>();
+	willJson["beneficiary_relation"] = res[0]["beneficiary_relation"].as<std::string>();
 	willJson["done_at"] = res[0]["done_at"].as<std::optional<std::string>>().value_or("");
 	willJson["created_at"] = res[0]["created_at"].as<std::string>();
+	willJson["quantity"] = res[0]["quantity"].as<float>();
 
-	return std::make_tuple(Core::Net::ResponseType::OK, willJson.dump(), std::nullopt);
+	return std::make_tuple(Core::Net::ResponseType::JSON, willJson.dump(), std::nullopt);
 }
 
 httpReturn UpdateWill(Core::Net::Request& req) {
@@ -312,7 +324,7 @@ httpReturn UpdateWill(Core::Net::Request& req) {
 	willJson["done_at"] = res[0]["done_at"].as<std::optional<std::string>>().value_or("");
 	willJson["created_at"] = res[0]["created_at"].as<std::string>();
 
-	return std::make_tuple(Core::Net::ResponseType::OK, willJson.dump(), std::nullopt);
+	return std::make_tuple(Core::Net::ResponseType::JSON, willJson.dump(), std::nullopt);
 }
 
 httpReturn DeleteWill(Core::Net::Request& req) {
@@ -379,7 +391,7 @@ httpReturn DeleteWill(Core::Net::Request& req) {
 		return std::make_tuple(Core::Net::ResponseType::INTERNAL_ERROR, "Failed to delete will", std::nullopt);
 	}
 
-	return std::make_tuple(Core::Net::ResponseType::OK, "Will deleted", std::nullopt);
+	return std::make_tuple(Core::Net::ResponseType::OK, "", std::nullopt);
 }
 
 httpReturn DeleteWills(Core::Net::Request& req) {
@@ -408,7 +420,11 @@ httpReturn DeleteWills(Core::Net::Request& req) {
 
 	pqxx::result res = Core::Database::database.Query("DELETE FROM wills WHERE stock_id IN (SELECT id FROM stocks WHERE owner_id = '" + id + "');");
 
-	return std::make_tuple(Core::Net::ResponseType::OK, std::to_string(res.affected_rows()) + " wills deleted", std::nullopt);
+	json willsJson;
+
+	willsJson["deleted_wills"] = std::to_string(res.affected_rows());
+
+	return std::make_tuple(Core::Net::ResponseType::JSON, willsJson.dump(), std::nullopt);
 }
 
 httpReturn AdminGetWills(Core::Net::Request& req) {
@@ -439,7 +455,7 @@ httpReturn AdminGetWills(Core::Net::Request& req) {
 		return std::make_tuple(Core::Net::ResponseType::NOT_AUTHORIZED, "Only admins can access this route", std::nullopt);
 	}
 
-	if (req.m_info.body != "") {
+	if (req.m_info.parameters["owner_id"] != "") {
 		json body;
 		try {
 			body = json::parse(req.m_info.body);
@@ -467,14 +483,16 @@ httpReturn AdminGetWills(Core::Net::Request& req) {
 			willJson["id"] = row["id"].as<std::string>();
 			willJson["stock_id"] = row["stock_id"].as<std::string>();
 			willJson["beneficiary_name"] = row["beneficiary_name"].as<std::string>();
-			willJson["beneficiary_egn"] = row["beneficiary_egn"].as<std::string>();
+			willJson["beneficiary_relation"] = row["beneficiary_relation"].as<std::string>();
 			willJson["done_at"] = row["done_at"].as<std::optional<std::string>>().value_or("");
 			willJson["created_at"] = row["created_at"].as<std::string>();
+			willJson["quantity"] = row["quantity"].as<std::string>();
+			willJson["owner_id"] = ownerId;
 
 			willsJson.push_back(willJson);
 		}
 
-		return std::make_tuple(Core::Net::ResponseType::OK, willsJson.dump(), std::nullopt);
+		return std::make_tuple(Core::Net::ResponseType::JSON, willsJson.dump(), std::nullopt);
 	}
 
 	pqxx::result res = Core::Database::database.Query("SELECT * FROM wills;");
@@ -485,14 +503,15 @@ httpReturn AdminGetWills(Core::Net::Request& req) {
 		willJson["id"] = row["id"].as<std::string>();
 		willJson["stock_id"] = row["stock_id"].as<std::string>();
 		willJson["beneficiary_name"] = row["beneficiary_name"].as<std::string>();
-		willJson["beneficiary_egn"] = row["beneficiary_egn"].as<std::string>();
+		willJson["beneficiary_relation"] = row["beneficiary_relation"].as<std::string>();
 		willJson["done_at"] = row["done_at"].as<std::optional<std::string>>().value_or("");
 		willJson["created_at"] = row["created_at"].as<std::string>();
+		willJson["quantity"] = row["quantity"].as<std::string>();
 
 		willsJson.push_back(willJson);
 	}
 
-	return std::make_tuple(Core::Net::ResponseType::OK, willsJson.dump(), std::nullopt);
+	return std::make_tuple(Core::Net::ResponseType::JSON, willsJson.dump(), std::nullopt);
 }
 
 httpReturn AdminGetWill(Core::Net::Request& req) {
@@ -523,15 +542,7 @@ httpReturn AdminGetWill(Core::Net::Request& req) {
 		return std::make_tuple(Core::Net::ResponseType::NOT_AUTHORIZED, "Only admins can access this route", std::nullopt);
 	}
 
-	json body;
-	try {
-		body = json::parse(req.m_info.body);
-	}
-	catch (json::parse_error& e) {
-		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, e.what(), std::optional<std::vector<std::string>>(false));
-	}
-
-	std::string willId = body["will_id"];
+	std::string willId = req.m_info.parameters["will_id"];
 
 	if (willId == "") {
 		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Missing fields", std::nullopt);
@@ -554,9 +565,10 @@ httpReturn AdminGetWill(Core::Net::Request& req) {
 	json willJson;
 	willJson["stock_id"] = res[0]["stock_id"].as<std::string>();
 	willJson["beneficiary_name"] = res[0]["beneficiary_name"].as<std::string>();
-	willJson["beneficiary_egn"] = res[0]["beneficiary_egn"].as<std::string>();
+	willJson["beneficiary_relation"] = res[0]["beneficiary_relation"].as<std::string>();
 	willJson["done_at"] = res[0]["done_at"].as<std::optional<std::string>>().value_or("");
 	willJson["created_at"] = res[0]["created_at"].as<std::string>();
+	willJson["quantity"] = res[0]["quantity"].as<float>();
 
 	return std::make_tuple(Core::Net::ResponseType::JSON, willJson.dump(), std::nullopt);
 }
@@ -746,7 +758,7 @@ httpReturn AdminDeleteWill(Core::Net::Request& req) {
 		return std::make_tuple(Core::Net::ResponseType::INTERNAL_ERROR, "Failed to delete will", std::nullopt);
 	}
 
-	return std::make_tuple(Core::Net::ResponseType::OK, "Will deleted", std::nullopt);
+	return std::make_tuple(Core::Net::ResponseType::OK, "", std::nullopt);
 }
 
 httpReturn DoWill(Core::Net::Request& req) {
@@ -810,15 +822,18 @@ httpReturn DoWill(Core::Net::Request& req) {
 		return std::make_tuple(Core::Net::ResponseType::BAD_REQUEST, "Stock does not exist", std::nullopt);
 	}
 
-	std::string stockId = res[0]["id"].as<std::string>();
-	std::string ownerId = res[0]["owner_id"].as<std::string>();
-
 	// Mark will as done with current date (yyyy-mm-dd)
-	res = Core::Database::database.Query("UPDATE wills SET done_at = CURRENT_DATE WHERE id = " + willId + ";");
+	res = Core::Database::database.Query("UPDATE wills SET done_at = CURRENT_DATE WHERE id = " + willId + " RETURNING quantity, stock_id;");
 
 	if (res.affected_rows() == 0) {
 		return std::make_tuple(Core::Net::ResponseType::INTERNAL_ERROR, "Failed to delete will", std::nullopt);
 	}
 
-	return std::make_tuple(Core::Net::ResponseType::OK, "Will marked as done", std::nullopt);
+	res = Core::Database::database.Query("UPDATE stocks SET quantity = quantity - " + res[0]["quantity"].as<std::string>() + " WHERE id = " + res[0]["stock_id"].as<std::string>() + ";");
+
+	if (res.affected_rows() == 0) {
+		return std::make_tuple(Core::Net::ResponseType::INTERNAL_ERROR, "Failed to delete will", std::nullopt);
+	}
+
+	return std::make_tuple(Core::Net::ResponseType::OK, "", std::nullopt);
 }

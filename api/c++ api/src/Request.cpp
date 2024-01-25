@@ -133,8 +133,8 @@ std::unordered_map<std::string, std::string> Core::Net::Request::GetHeaders(std:
 	auto split = Core::Net::Request::Split(req, '\n');
 	std::unordered_map<std::string, std::string> headers;
 
-	for (int i = 1; i < split.size(); ++i) {
-		auto headerMatch = ctre::match<"(.*): (.*)">(split[i]);
+	for (int i = 0; i < split.size(); ++i) {
+		auto headerMatch = ctre::match<"(.*?): (.*)">(split[i]);
 		auto matched = headerMatch.matched();
 		if (matched.to_string() != "") {
 			std::string header = matched.get<1>().to_string();
