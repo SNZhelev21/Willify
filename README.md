@@ -26,7 +26,8 @@
 
 ## ⚙ Installation
   ```
-  cd frontend
+  git clone https://github.com/SNZhelev21/Willify
+  cd Willify/frontend
   npm i
   npm run dev
   ```
