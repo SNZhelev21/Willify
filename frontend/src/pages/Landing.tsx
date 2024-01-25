@@ -6,9 +6,9 @@ function Landing()
 {
     return(
         <>
-            <div className="w-full h-full min-h-[100%]">
+            <div className="w-full h-full min-h-[100vh]">
                 <div className="backdrop-blur-sm bg-white/50 sticky top-0 left-0 z-50 w-screen">
-                    <nav className="sm:px-4 w-[95%] bg-transparent max-w-[1200px] mx-auto pb-5 pt-5 gap-x-4 grid grid-cols-2 place-items-center">
+                    <nav className="sm:px-4 w-[95%] bg-transparent mx-auto pb-5 mb-[10vh] pt-5 gap-x-4 grid grid-cols-2 place-items-center">
                         <div className="flex justify-self-start gap-4 w-fit h-fit">
                             <Link to="/" className="flex items-center gap-2">
                                 <img src="/src/assets/Logo.svg" className="w-16 h-16"></img>
@@ -23,7 +23,7 @@ function Landing()
                 </div>
 
                 <div className="w-screen">
-                    <div className="sm:px-4 relative mx-auto grid grid-cols-2 place-items-center w-[62%] max-w-[1200px] gap-20 pb-[80px]">
+                    <div className="sm:px-4 relative mx-auto grid grid-cols-2 place-items-center w-[62%] gap-20 pb-[80px]">
                         <div className="grid justify-self-end">
                             <div className="justify-self-end">
                                 <h2 className="text-6xl text-black">Welcome to </h2>

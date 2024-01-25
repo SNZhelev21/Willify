@@ -21,7 +21,6 @@ const App = createBrowserRouter(
         <Route path="login" element={<Signin />} />
         <Route path="register" element={<Signup />} />
         <Route path="home" element={<Home />} />
-        <Route path="home" element={<Home />} />
         <Route path="assets" element={<Assets />} />
         <Route path="wills" element={<Wills />} />
       </Route>
