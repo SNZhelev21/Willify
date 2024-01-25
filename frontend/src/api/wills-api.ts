@@ -47,7 +47,7 @@ class WillsApi {
             stock_id: `${stockId}`,
             beneficiary_name: `${beneficiaryName}`,
             beneficiary_relation: `${beneficiaryRel}`,
-            quantity: quantity
+            quantity: `${quantity}`
         }, {
             headers: {
                 'Authorization': `Bearer ${storageService.retrieveAccessToken()}`

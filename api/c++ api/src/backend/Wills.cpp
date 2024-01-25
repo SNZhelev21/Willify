@@ -152,10 +152,8 @@ httpReturn GetWills(Core::Net::Request& req) {
 		willJson["done_at"] = row["done_at"].as<std::optional<std::string>>().value_or("");
 		willJson["created_at"] = row["created_at"].as<std::string>();
 		willJson["quantity"] = row["quantity"].as<std::string>();
-		
-		if (row["done_at"].is_null() == false) {
-			willsJson.push_back(willJson);
-		}
+
+		willsJson.push_back(willJson);
 	}
 	return std::make_tuple(Core::Net::ResponseType::JSON, willsJson.dump(), std::nullopt);
 }

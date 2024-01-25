@@ -17,10 +17,9 @@ const App = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route path="/">
-        <Route index element={<Landing />} />s
+        <Route index element={<Landing />} />
         <Route path="login" element={<Signin />} />
         <Route path="register" element={<Signup />} />
-        <Route path="home" element={<Home />} />
         <Route path="assets" element={<Assets />} />
         <Route path="wills" element={<Wills />} />
       </Route>

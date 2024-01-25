@@ -24,7 +24,7 @@ function Signin() {
     async function submit() {
         await userAuthApi.apiUserAuthLoginPost(userdata).then(function (response) {
             storageService.saveAccessToken((response as any).data.token);
-            navigate("/home")
+            navigate("/assets")
         }).catch(function (error) {
             alert("Error: " + error);
         });

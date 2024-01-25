@@ -42,7 +42,7 @@ function Signup()
     await userAuthApi.apiUserAuthRegisterPost(userdata).then(async function () {
         await userAuthApi.apiUserAuthLoginPost({username: userdata.username, password:userdata.password}).then(function (response) {
           storageService.saveAccessToken((response as any).data.token);
-          navigate("/home")
+          navigate("/assets")
         })
     }).catch(function (error) {
         alert("Error: " + error);

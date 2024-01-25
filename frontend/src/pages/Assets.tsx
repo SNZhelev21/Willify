@@ -133,7 +133,7 @@ function Assets() {
                 <div className="sticky top-0 left-0 bg-white w-screen p-3 z-40">
                     <nav className="w-[62%] mx-auto grid grid-cols-3 grid-rows-1 place-items-center">
                         <NavLink to="/assets" className="text-3xl text-black hover:text-primary hover:text-4xl transition-all duration-150 ease-in-out aria-[current=page]:text-4xl aria-[current=page]:text-primary aria-[current=page]:bg-transparent">Assets</NavLink>
-                        <NavLink to="/home" className="text-3xl text-black hover:text-primary hover:text-4xl transition-all duration-150 ease-in-out aria-[current=page]:text-4xl aria-[current=page]:text-primary aria-[current=page]:bg-transparent">Home</NavLink>
+                        <NavLink to="" className="text-3xl text-black hover:text-primary hover:text-4xl transition-all duration-150 ease-in-out aria-[current=page]:text-4xl aria-[current=page]:text-primary aria-[current=page]:bg-transparent"></NavLink>
                         <NavLink to="/wills" className="text-3xl text-black hover:text-primary hover:text-4xl transition-all duration-150 ease-in-out aria-[current=page]:text-4xl aria-[current=page]:text-primary aria-[current=page]:bg-transparent">Wills</NavLink>
                     </nav>
                 </div>
@@ -144,7 +144,7 @@ function Assets() {
                             assets?.map((element, index) => {
                                 return (
                                     <div id={`asset${index}`} className="w-full h-fit p-4 bg-white border-4 flex justify-between items-center">
-                                        <p className="text-2xl text-black">{element.name}</p>
+                                        <p className="text-2xl text-black">{`${element.quantity} ${element.name}(s)`}</p>
                                         <button className="p-2 px-4 bg-white border-2 border-primary hover:bg-gray-100 text-primary rounded-md transition ease-in-out duration-100 h-fit" onClick={() => {
                                             deleteAsset(index);
                                         }}>Delete</button>

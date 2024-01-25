@@ -6,4 +6,5 @@ export interface WillVM {
     created_at: String;
     beneficiary_relation: String;
     quantity: Number;
+    stock_name: String;
 }
