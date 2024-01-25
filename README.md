@@ -25,4 +25,8 @@
   <img src="https://w7.pngwing.com/pngs/441/460/png-transparent-postgresql-plain-wordmark-logo-icon-thumbnail.png" width=60 alt="Postgresql logo">
 
 ## ⚙ Installation
-
+  ```
+  cd frontend
+  npm i
+  npm run dev
+  ```
