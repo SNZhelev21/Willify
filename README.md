@@ -6,9 +6,7 @@
 
 
 ## 📋 Description    
-<p align="left">
  Our project is about distributing digital will.
- <\p>
 ## 👥 Team Members
 * <a href="https://github.com/SNZhelev21">**Svetoslav Zhelev**</a> - *Scrum trainer*
 * <a href="https://github.com/ISBаchvarov21">**Ivaylo Bachvarov**</a> - *Backend Developer* 
